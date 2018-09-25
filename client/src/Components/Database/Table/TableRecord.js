@@ -4,7 +4,6 @@ import { Badge, Card, CardHeader, CardBody, CardFooter,
   Collapse, ListGroup, ListGroupItem, Button } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 
 class TableRecord extends Component {
   constructor(props){
@@ -71,7 +70,7 @@ class TableRecord extends Component {
                 >
                   <span>{field.title}</span>
                   <FontAwesomeIcon className="remove-field"
-                    icon={faWindowClose} size="2x" onClick={() =>
+                    icon="window-close" size="2x" onClick={() =>
                       removeField(field._id)
                     }/>
                 </ListGroupItem>
