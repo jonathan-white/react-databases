@@ -159,7 +159,7 @@ class Home extends Component {
     const state = store.getState();
     console.log(state);
 
-    const { databases, selectedDB, selectedTable, selectedField, error } = state.dbManager;
+    const { databases, selectedDB, selectedTable, error } = state.dbManager;
     const { showDBModal, showTableModal, showFieldModal } = state.modalManager;
     const { authUser } = state.formManager;
     const { dbTitle, dbSummary, dbType, tbTitle, tbSummary, tbRecordCount,
@@ -171,6 +171,8 @@ class Home extends Component {
       dbList = databases.filter(d => {
         if(d.title.toLowerCase().includes(state.formManager.query.toLowerCase() || '')){
           return d;
+        } else {
+          return false;
         }
       });
     }

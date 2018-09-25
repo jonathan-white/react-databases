@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Alert } from 'reactstrap';
-
 import { auth } from '../../firebase';
 import './Login.css';
 
@@ -41,10 +40,8 @@ const mapsDispatchToLoginProps = (dispatch) => {
   }
 }
 
-const Login = connect(
-  mapStateToLoginProps,
-  mapsDispatchToLoginProps
-)(({ username, password, error, handleInputChange, submitCredentials }) => (
+// Presentational Component
+const LoginForm = ({ username, password, error, handleInputChange, submitCredentials }) => (
     <div className="login">
       <Form>
         <Input type="text" autoComplete="off" name="username"
@@ -59,6 +56,11 @@ const Login = connect(
       </Form>
       {error && <Alert color="danger">{error.message}</Alert>}
     </div>
-))
+);
+
+const Login = connect(
+  mapStateToLoginProps,
+  mapsDispatchToLoginProps
+)(LoginForm);
 
 export default Login;

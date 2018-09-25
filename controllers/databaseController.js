@@ -3,7 +3,7 @@ const db = require('../models');
 module.exports = {
   findAll: (req, res) => {
     db.Database
-      .find(req.query)
+      .find({ userId: req.body.userId })
       .populate({ path: 'tables', populate: { path: 'fields' }})
       .populate('projects')
       .sort({ _id: 1 })
@@ -12,7 +12,7 @@ module.exports = {
   },
   findAllShowIDsOnly: function(req, res) {
     db.Database
-      .find(req.query)
+      .find({ userId: req.body.userId })
       .sort({ dateAdded: -1 })
       .then(dbModel => res.json(dbModel.map(l => ({
           _id: l._id,
@@ -23,7 +23,7 @@ module.exports = {
   },
   findById: function(req, res) {
     db.Database
-      .find({_id: req.params.id})
+      .find({ userId: req.body.userId, _id: req.params.id})
       .populate({ path: 'tables', populate: { path: 'fields' }})
       .populate('projects')
       .then(dbModel => res.json(dbModel))
@@ -37,10 +37,10 @@ module.exports = {
   },
   addProject: function(req, res) {
     db.Project
-      .find({_id: req.body.projectId})
+      .find({userId: req.body.userId, _id: req.body.projectId})
       .then(dbProject => {
         return db.Database.findOneAndUpdate(
-          {_id: req.params.id},
+          {userId: req.body.userId, _id: req.params.id},
           { $push: { "projects": req.body.projectId } },
           { new: true })
           .populate({ path: 'tables', populate: { path: 'fields' }})
@@ -52,7 +52,7 @@ module.exports = {
   removeProject: function(req, res) {
     db.Database
       .findOneAndUpdate(
-        {_id: req.params.id},
+        {userId: req.body.userId, _id: req.params.id},
         { $pull: { "projects": req.body.projectId } })
       .populate({ path: 'tables', populate: { path: 'fields' }})
       .populate('projects')
@@ -61,7 +61,7 @@ module.exports = {
   },
   update: async function(req, res) {
     db.Database
-      .findOneAndUpdate({ _id: req.params.id }, req.body)
+      .findOneAndUpdate({ userId: req.body.userId, _id: req.params.id }, req.body)
       .populate({ path: 'tables', populate: { path: 'fields' }})
       .populate('projects')
       .then(dbModel => res.json(dbModel))
@@ -69,7 +69,7 @@ module.exports = {
   },
   remove: function(req, res) {
     db.Database
-      .findById({ _id: req.params.id })
+      .findById({ userId: req.body.userId, _id: req.params.id })
       .then(dbModel => dbModel.remove())
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));

@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, ModalFooter,
-  Button, Form, FormGroup, Label, Input } from 'reactstrap';
+
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import TableRecord from './TableRecord';
@@ -101,28 +100,28 @@ const TableCol = connect(
       }
     };
 
-  const addTable = (event, newTable) => {
-    event.preventDefault();
-
-    API.addTable(newTable)
-      .then((resp) => {
-        refreshSelectedDB();
-      })
-      .catch(err => updateError());
-  };
+  // const addTable = (event, newTable) => {
+  //   event.preventDefault();
+  //
+  //   API.addTable(newTable)
+  //     .then((resp) => {
+  //       refreshSelectedDB();
+  //     })
+  //     .catch(err => updateError());
+  // };
   const removeTable = (id) => {
     API.removeTable(id)
       .then(() => refreshSelectedDB())
       .catch(err => updateError());
   }
 
-  const addField = (event, newField) => {
-    event.preventDefault();
-
-    API.addField(newField)
-      .then(() => refreshSelectedDB())
-      .catch(err => updateError());
-  };
+  // const addField = (event, newField) => {
+  //   event.preventDefault();
+  //
+  //   API.addField(newField)
+  //     .then(() => refreshSelectedDB())
+  //     .catch(err => updateError());
+  // };
 
   const removeField = (id) => {
     API.removeField(id)
