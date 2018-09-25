@@ -1,0 +1,28 @@
+
+.table-item {
+  background-color: #eee;
+}
+
+.table-item.expanded {
+  background-color: #eee;
+}
+
+.table-item:hover {
+  background-color: #cde7f5;
+  -webkit-box-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+}
+
+.table-item .card-header:hover {
+  cursor: pointer;
+}
+
+.table-item .card-body {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.table-col {
+  overflow: visible;
+  height: 1px;
+}

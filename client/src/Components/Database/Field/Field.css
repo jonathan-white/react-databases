@@ -1,0 +1,36 @@
+
+.field-item {
+  display: flex !important;
+  justify-content: space-between;
+}
+
+.field-item:hover {
+  background-color: #cde7f5;
+  color: #26168b;
+  -webkit-box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+.field-item span + * {
+  opacity: 0;
+}
+.field-item:hover span + * {
+  opacity: 1;
+}
+.field-item .remove-field {
+  color: #ccc;
+  z-index: 1;
+}
+.field-item .remove-field:hover {
+  color: #dc3545;
+  cursor: pointer;
+}
+
+.field-entry:hover {
+  -webkit-box-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+}
+
+.field-entry .card-body {
+  position: relative;
+}
