@@ -362,6 +362,18 @@ const formManager = (state = {}, action) => {
         ...state,
         query: action.query
       }
+    case 'FORM_ERROR':
+      return {
+        ...state,
+        error: action.error
+      }
+    case 'AUTHENTICATED_USER':
+      return {
+        ...state,
+        authUser: action.user,
+        username: null,
+        password: null
+      }
     default:
       return state;
   }

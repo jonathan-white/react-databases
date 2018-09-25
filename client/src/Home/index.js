@@ -6,6 +6,7 @@ import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter,
 
 import logo from '../images/gear.svg';
 import DatabaseList from '../Components/Database';
+import Login from '../Components/Login';
 import API from '../utils/API';
 
 class Home extends Component {
@@ -160,6 +161,7 @@ class Home extends Component {
 
     const { databases, selectedDB, selectedTable, selectedField, error } = state.dbManager;
     const { showDBModal, showTableModal, showFieldModal } = state.modalManager;
+    const { authUser } = state.formManager;
     const { dbTitle, dbSummary, dbType, tbTitle, tbSummary, tbRecordCount,
     fdTitle, fdSummary, fdDataType, fdDataLength, fdAllowNull, fdKey, fdDefaultValue } = state.formManager;
 
@@ -207,9 +209,10 @@ class Home extends Component {
 
     return (
       <div className="App">
-        <header className="App-header">
+        <header className={`App-header ${authUser ? 'signed-in' : ''}`}>
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Database Management</h1>
+          <Login />
         </header>
         <div className="container my-4">
           <div className="row">
