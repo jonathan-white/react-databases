@@ -7,8 +7,8 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import expect from 'expect';
-import deepFreeze from 'deep-freeze';
+// import expect from 'expect';
+// import deepFreeze from 'deep-freeze';
 
 // Reducer
 const dbManager = (
@@ -352,38 +352,6 @@ const dbManager = (
 
 const formManager = (state = {}, action) => {
   switch(action.type){
-    // case 'ADD_DATABASE':
-    //   return {
-    //     ...state,
-    //     dbTitle: action.title,
-    //     dbSummary: action.summary,
-    //     dbType: action.type
-    //   }
-    // case 'ADD_TABLE':
-    //   return {
-    //     ...state,
-    //     tbTitle: action.title,
-    //     tbSummary: action.summary,
-    //     tbRecordCount: action.recordCount
-    //   }
-    // case 'ADD_FIELD':
-    //   return {
-    //     ...state,
-    //     fdTitle: action.title,
-    //     fdSummary: action.summary,
-    //     fdDataType: action.dataType || 'varchar',
-    //     fdDataLength: action.dataLength,
-    //     fdAllowNull: action.allowNull || false,
-    //     fdKey: action.key,
-    //     fdDefault: action.defaultValue,
-    //   }
-    // case 'ADD_PROJECT':
-    //   return {
-    //     ...state,
-    //     prjTitle: action.title,
-    //     prjSummary: action.summary,
-    //     prjWebsite: action.website,
-    //   }
     case 'ADD_INPUT_CHANGE':
       return {
         ...state,
@@ -415,104 +383,6 @@ const modalManager = (state = {
       return state;
   }
 };
-
-const testToggle = () => {
-  const stateBefore = {
-    editor: {
-      database: {
-        dbEditMode: true,
-        dbEditTitle: true,
-      },
-      table: {
-        tbEditMode: false,
-        tbEditTitle: false,
-      }
-    }
-  };
-  const stateAfter = {
-    editor: {
-      database: {
-        dbEditMode: true,
-        dbEditTitle: false,
-      },
-      table: {
-        tbEditMode: false,
-        tbEditTitle: false,
-      }
-    }
-  };
-  const action = {
-    type: 'TOGGLE_EDIT_STATE',
-    tier: 'database',
-    name: 'dbEditTitle'
-  };
-
-  deepFreeze(stateBefore);
-
-  expect(
-    dbManager(stateBefore, action)
-  ).toEqual(stateAfter);
-};
-const testInputChange = () => {
-  const stateBefore = {
-    editor: {
-      database: {
-        dbTitle: null,
-        dbSummary: null,
-        dbType: null,
-      },
-      table: {
-        tbTitle: null,
-        tbSummary: null,
-        tbRecordCount: null,
-      }
-    }
-  };
-  const stateAfter = {
-    editor: {
-      database: {
-        dbTitle: 'Cities',
-        dbSummary: null,
-        dbType: null,
-      },
-      table: {
-        tbTitle: null,
-        tbSummary: null,
-        tbRecordCount: null,
-      }
-    }
-  };
-  const action = {
-    type: 'EDIT_INPUT_CHANGE',
-    tier: 'database',
-    name: 'dbTitle',
-    value: 'Cities'
-  };
-
-  deepFreeze(stateBefore);
-
-  expect(
-    dbManager(stateBefore, action)
-  ).toEqual(stateAfter);
-};
-const testToggleModal = () => {
-  const stateBefore = {
-    showProjectModal: false,
-  }
-  const stateAfter = {
-    showProjectModal: true,
-  }
-  const action = {
-    type: 'TOGGLE_MODAL',
-    name: 'showProjectModal'
-  }
-  deepFreeze(stateBefore);
-  expect(modalManager(stateBefore,action)).toEqual(stateAfter);
-};
-testToggle();
-testInputChange();
-testToggleModal();
-console.log('All tests passed.');
 
 // Reducer composition
 const databaseApp = combineReducers({
