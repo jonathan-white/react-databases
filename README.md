@@ -6,9 +6,11 @@ App that lets you keep track of various databases including the tables and field
 * Record databases, tables, and field
 
 ### Coming Soon
-* User Authentication
+* User Authentication Phase II
 
 ### Developer Notes
+* **09/25/18 Notes:**
+  * Completed User Authentication Phase I
 * **09/24/18 Notes:**
   * Deployed the site: https://db-tracker.herokuapp.com/
 * **09/22/18 Notes:**

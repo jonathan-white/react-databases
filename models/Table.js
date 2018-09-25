@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const TableSchema = new Schema({
-  databaseId: String,
+  userId: {type: String, required: true},
+  databaseId: {type: String, required: true},
   title: {type: String, required: true},
   summary: String,
   fields: [
