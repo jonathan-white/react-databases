@@ -3,16 +3,18 @@ const fieldController = require("../../controllers/fieldController");
 
 // Matches with "/api/fields"
 router.route("/")
-  .get(fieldController.findAll)
+  .post(fieldController.findAll); //get
+
+router.route("/add-field")
   .post(fieldController.create);
 
-  // Matches with "/api/fields/database/:id"
-  router.route("/table/:id")
-    .get(fieldController.findByTable);
+// Matches with "/api/fields/database/:id"
+router.route("/table/:id")
+  .post(fieldController.findByTable); //get
 
 // Matches with "/api/fields/:id"
 router.route("/:id")
-  .get(fieldController.findById)
+  .post(fieldController.findById) //get
   .put(fieldController.update)
   .delete(fieldController.remove);
 

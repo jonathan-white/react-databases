@@ -371,6 +371,7 @@ const formManager = (state = {}, action) => {
       return {
         ...state,
         authUser: action.user,
+        userId: action.user.uid,
         username: null,
         password: null
       }

@@ -3,16 +3,18 @@ const databaseController = require("../../controllers/databaseController");
 
 // Matches with "/api/databases"
 router.route("/")
-  .get(databaseController.findAll)
+  .post(databaseController.findAll); //get
+
+router.route("/add-database")
   .post(databaseController.create);
 
 // Matches with "/api/databases/ids"
 router.route("/ids")
-  .get(databaseController.findAllShowIDsOnly);
+  .post(databaseController.findAllShowIDsOnly);  //get
 
 // Matches with "/api/databases/:id"
 router.route("/:id")
-  .get(databaseController.findById)
+  .post(databaseController.findById) //get
   .put(databaseController.update)
   .delete(databaseController.remove);
 

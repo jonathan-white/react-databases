@@ -100,29 +100,11 @@ const TableCol = connect(
       }
     };
 
-  // const addTable = (event, newTable) => {
-  //   event.preventDefault();
-  //
-  //   API.addTable(newTable)
-  //     .then((resp) => {
-  //       refreshSelectedDB();
-  //     })
-  //     .catch(err => updateError());
-  // };
   const removeTable = (id) => {
     API.removeTable(id)
       .then(() => refreshSelectedDB())
       .catch(err => updateError());
   }
-
-  // const addField = (event, newField) => {
-  //   event.preventDefault();
-  //
-  //   API.addField(newField)
-  //     .then(() => refreshSelectedDB())
-  //     .catch(err => updateError());
-  // };
-
   const removeField = (id) => {
     API.removeField(id)
       .then(() => {

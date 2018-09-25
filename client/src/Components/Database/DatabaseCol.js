@@ -25,6 +25,7 @@ const mapStateToDBColumnProps = (state) => {
     prjTitle: state.formManager.prjTitle,
     prjSummary: state.formManager.prjSummary,
     prjWebsite: state.formManager.prjWebsite,
+    userId: state.formManager.userId,
   }
 };
 
@@ -114,8 +115,8 @@ const mapDispatchToDBColumnProps = (dispatch) => {
           error: err
         }));
     },
-    removeDB: (id) => {
-      API.removeDB(id)
+    removeDB: (userId, id) => {
+      API.removeDB(userId, id)
         .then(() => {
           this.refreshDBList();
         })
@@ -193,7 +194,7 @@ const DatabaseCol = connect(
   hasChangedSummary, hasChangedType, projectModal, prjTitle, prjSummary,
   prjWebsite, editDatabase, toggleDbEditState, setDbEditState, removeDB,
   toggleDbSelection, submitDbChanges, refreshDBList, addProjectToDB,
-  removeProjectFromDB, toggleModal, handleInputChange }) => {
+  removeProjectFromDB, toggleModal, handleInputChange, userId }) => {
 
   const isValidProject = prjTitle !== null && prjTitle !== '' &&
     prjSummary !== null && prjSummary !== '';
@@ -306,7 +307,7 @@ const DatabaseCol = connect(
                 : (<span className="item-type">{dbType}</span>)
               }
               {editMode &&
-                <Button color="danger" onClick={() => removeDB(db._id)}>
+                <Button color="danger" onClick={() => removeDB(userId, db._id)}>
                   Delete
                 </Button>
               }

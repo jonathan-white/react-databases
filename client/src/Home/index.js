@@ -19,11 +19,10 @@ class Home extends Component {
     this.removeDB = this.removeDB.bind(this);
     this.removeTable = this.removeTable.bind(this);
     this.removeField = this.removeField.bind(this);
-    this.toggleDBModal = this.toggleDBModal.bind(this);
   };
 
   componentDidMount() {
-    this.refreshDBList(); //To be removed
+    // this.refreshDBList(); //To be removed
 
     const { store } = this.context;
     this.unsubscribe = store.subscribe(() =>
@@ -37,8 +36,9 @@ class Home extends Component {
 
   refreshDBList() {
     const { store } = this.context;
+    const state = store.getState();
 
-    API.getDatabases()
+    API.getDatabases(state.formManager.userId)
       .then(resp => store.dispatch({
         type: 'REFRESH_DB_LIST',
         databases: resp.data
@@ -54,7 +54,7 @@ class Home extends Component {
     const state = store.getState();
 
     if(state.dbManager.selectedDB) {
-      API.getDatabase(state.dbManager.selectedDB._id)
+      API.getDatabase(state.formManager.userId, state.dbManager.selectedDB._id)
         .then(resp => this.setState({
           selectedDB: resp.data[0],
           tables: resp.data[0].tables
@@ -68,7 +68,7 @@ class Home extends Component {
     const state = store.getState();
 
     if(state.dbManager.selectedTable) {
-      API.getTable(state.dbManager.selectedTable._id)
+      API.getTable(state.formManager.userId, state.dbManager.selectedTable._id)
         .then(resp => this.setState({ selectedTable: resp.data }))
         .catch(err => this.setState({ error: err }));
     }
@@ -103,23 +103,23 @@ class Home extends Component {
   };
 
   // Delete API
-  removeDB(id){
-    API.removeDB(id)
+  removeDB(userId, id){
+    API.removeDB(userId,id)
       .then(() => this.refreshDBList())
       .catch(err => this.setState({error: err}));
   };
 
-  removeTable(id){
-    API.removeTable(id)
+  removeTable(userId,id){
+    API.removeTable(userId,id)
       .then(() => this.refreshSelectedDB())
       .catch(err => this.setState({error: err}));
   };
 
-  removeField(id){
+  removeField(userId,id){
     const { store } = this.context;
     const state = store.getState();
 
-    API.removeField(id)
+    API.removeField(userId,id)
       .then(() => {
         if(state.dbManager.selectedField) {
           if(id === state.dbManager.selectedField._id){
@@ -129,10 +129,6 @@ class Home extends Component {
         this.refreshSelectedDB();
       })
       .catch(err => this.setState({error: err}));
-  };
-
-  toggleDBModal() {
-    this.setState((prevState) => ({ dbModal: !prevState.dbModal }));
   };
 
   handleInputChange(event){
@@ -161,7 +157,7 @@ class Home extends Component {
 
     const { databases, selectedDB, selectedTable, error } = state.dbManager;
     const { showDBModal, showTableModal, showFieldModal } = state.modalManager;
-    const { authUser } = state.formManager;
+    const { authUser, userId } = state.formManager;
     const { dbTitle, dbSummary, dbType, tbTitle, tbSummary, tbRecordCount,
     fdTitle, fdSummary, fdDataType, fdDataLength, fdAllowNull, fdKey, fdDefaultValue } = state.formManager;
 
@@ -180,12 +176,14 @@ class Home extends Component {
 
     // Set
     const dbData = {
+      userId: userId,
       title: dbTitle,
       summary: dbSummary,
       type: dbType || 'MySQL'
     };
 
     const tableData = {
+      userId: userId,
       databaseId: (selectedDB) ? selectedDB._id : '',
       title: tbTitle,
       summary: tbSummary || '',
@@ -193,6 +191,7 @@ class Home extends Component {
     };
 
     const fieldData = {
+      userId: userId,
       tableId: (selectedTable) ? selectedTable._id : null,
       title: fdTitle,
       summary: fdSummary,
@@ -414,7 +413,7 @@ class Home extends Component {
             </ModalFooter>
           </Form>
         </Modal>
-        {error && <Alert color="danger" className="error-message">{error}</Alert>}
+        {error && <Alert color="danger" className="error-message">{error.message}</Alert>}
       </div>
     );
   }

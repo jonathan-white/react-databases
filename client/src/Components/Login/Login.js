@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Form, Input, Button, Alert } from 'reactstrap';
 import { auth } from '../../firebase';
 import './Login.css';
+import API from '../../utils/API';
 
 const mapStateToLoginProps = (state) => {
   return {
@@ -31,6 +32,17 @@ const mapsDispatchToLoginProps = (dispatch) => {
             type: 'AUTHENTICATED_USER',
             user: resp.user
           });
+
+          // Fetch user's databases
+          API.getDatabases(resp.user.uid)
+            .then(resp => dispatch({
+              type: 'REFRESH_DB_LIST',
+              databases: resp.data
+            }))
+            .catch(err => dispatch({
+              type: 'RECORD_ERROR',
+              error: err
+            }));
         })
         .catch(err => dispatch({
           type: 'FORM_ERROR',

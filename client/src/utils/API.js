@@ -3,55 +3,61 @@ import axios from 'axios';
 export default {
   // Database API
   // ================================
-  getDatabases: () => {
-    return axios.get('/api/databases');
+  getDatabases: (userId) => {
+    return axios.post('/api/databases', { userId });
   },
-  getDatabase: (id) => {
-    return axios.get(`/api/databases/${id}`);
+  getDatabase: (userId, id) => {
+    return axios.post(`/api/databases/${id}`, { userId });
   },
   addDatabase: (dbData) => {
-    return axios.post('/api/databases', dbData);
+    return axios.post('/api/databases/add-database', dbData);
   },
-  removeDB: (dbId) => {
-    return axios.delete(`/api/databases/${dbId}`);
+  removeDB: (userId, dbId) => {
+    return axios.delete(`/api/databases/${dbId}`, { userId });
   },
   updateDB: (dbId, updatedData) => {
     return axios.put(`/api/databases/${dbId}`, updatedData);
   },
-  addDBProject: (dbId, projId) => {
-    return axios.post(`/api/databases/${dbId}/add-project`,projId);
+  addDBProject: (dbId, projData) => {
+    return axios.post(`/api/databases/${dbId}/add-project`, projData);
   },
-  removeDBProject: (dbId, projId) => {
-    return axios.delete(`/api/databases/${dbId}/remove-project`,projId)
+  removeDBProject: (dbId, projData) => {
+    return axios.delete(`/api/databases/${dbId}/remove-project`, projData)
   },
 
   // Table API
   // ================================
   addTable: (tableData) => {
-    return axios.post('/api/tables', tableData);
+    return axios.post('/api/tables/add-table', tableData);
   },
-  getTable: (id) => {
-    return axios.get(`/api/tables/${id}`);
+  getTable: (userId, id) => {
+    return axios.post(`/api/tables/${id}`, { userId });
   },
-  removeTable: (tableId) => {
-    return axios.delete(`/api/tables/${tableId}`);
+  removeTable: (userId, tableId) => {
+    return axios.delete(`/api/tables/${tableId}`, { userId });
+  },
+  updateTable: (tableId, updatedData) => {
+    return axios.put(`/api/tables/${tableId}`, updatedData);
   },
 
   // Field API
   // ================================
   addField: (fieldData) => {
-    return axios.post('/api/fields', fieldData);
+    return axios.post('/api/fields/add-field', fieldData);
   },
-  removeField: (fieldId) => {
-    return axios.delete(`/api/fields/${fieldId}`);
+  removeField: (userId, fieldId) => {
+    return axios.delete(`/api/fields/${fieldId}`, { userId });
+  },
+  updateField: (fieldId, updatedData) => {
+    return axios.put(`/api/fields/${fieldId}`, updatedData);
   },
 
   // Project API
   // ================================
-  getProjects: () => {
-    return axios.get('/api/projects');
+  getProjects: (userId) => {
+    return axios.post('/api/projects', { userId });
   },
   addProject: (projData) => {
-    return axios.post('/api/projects', projData);
+    return axios.post('/api/projects/add-project', projData);
   }
 };
