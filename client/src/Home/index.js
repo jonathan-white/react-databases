@@ -19,8 +19,6 @@ class Home extends Component {
     this.addTable = this.addTable.bind(this);
     this.addField = this.addField.bind(this);
     this.removeDB = this.removeDB.bind(this);
-    this.removeTable = this.removeTable.bind(this);
-    this.removeField = this.removeField.bind(this);
   };
 
   componentDidMount() {
@@ -98,6 +96,14 @@ class Home extends Component {
     }
   };
 
+  updateError(error){
+    const { store } = this.context;
+    store.dispatch({
+      type: 'RECORD_ERROR',
+      error: error
+    })
+  };
+
   // Create API
   addDatabase(event, newDB) {
     event.preventDefault();
@@ -110,12 +116,9 @@ class Home extends Component {
             type: 'UPDATE_DATABASES',
             databases: resp.data
           }))
-          .catch(err => store.dispatch({
-            type: 'RECORD_ERROR',
-            error: err
-          }));
+          .catch(err => this.updateError(err));
       })
-      .catch(err => this.setState({error: err}));
+      .catch(err => this.updateError(err));
   };
 
   addTable(event, newTable) {
@@ -129,12 +132,9 @@ class Home extends Component {
           type: 'UPDATE_TABLES',
           databases: resp.data
         }))
-        .catch(err => store.dispatch({
-          type: 'RECORD_ERROR',
-          error: err
-        }))
+        .catch(err => this.updateError(err))
       )
-      .catch(err => this.setState({error: err}));
+      .catch(err => this.updateError(err));
   };
 
   addField(event, newField) {
@@ -148,41 +148,16 @@ class Home extends Component {
             type: 'UPDATE_FIELDS',
             databases: resp.data
           }))
-          .catch(err => store.dispatch({
-            type: 'RECORD_ERROR',
-            error: err
-          }))
+          .catch(err => this.updateError(err))
       )
-      .catch(err => this.setState({error: err}));
+      .catch(err => this.updateError(err));
   };
 
   // Delete API
   removeDB(userId, id){
     API.removeDB(userId,id)
       .then(() => this.refreshDBList())
-      .catch(err => this.setState({error: err}));
-  };
-
-  removeTable(userId,id){
-    API.removeTable(userId,id)
-      .then(() => this.refreshDBList())
-      .catch(err => this.setState({error: err}));
-  };
-
-  removeField(userId,id){
-    const { store } = this.context;
-    const state = store.getState();
-
-    API.removeField(userId,id)
-      .then(() => {
-        if(state.dbManager.selectedField) {
-          if(id === state.dbManager.selectedField._id){
-            this.setState({selectedField: null});
-          }
-        }
-        this.refreshDBList();
-      })
-      .catch(err => this.setState({error: err}));
+      .catch(err => this.updateError(err));
   };
 
   handleInputChange(event){
@@ -202,7 +177,29 @@ class Home extends Component {
       type: 'TOGGLE_MODAL',
       name: modalName
     })
-  }
+  };
+
+  addProjectToDB(event, userId, dbId, projData){
+    event.preventDefault();
+    const { store } = this.context;
+
+    API.addProject(projData)
+      .then(resp => {
+        // Link new project to the database
+        API.addDBProject(dbId, { projectId: resp.data._id })
+          .then(result => {
+            store.dispatch({
+              type: 'REFRESH_DB',
+              database: resp.data
+            });
+          })
+          .catch(err => this.updateError(err));
+
+        // Reset the error
+        this.updateError(null)
+      })
+      .catch(err => this.updateError(err));
+  };
 
   render() {
     const { store } = this.context;
@@ -210,10 +207,10 @@ class Home extends Component {
     console.log(state);
 
     const { databases, selectedDB, selectedTable, error } = state.dbManager;
-    const { showDBModal, showTableModal, showFieldModal } = state.modalManager;
-    const { authUser, userId } = state.formManager;
-    const { dbTitle, dbSummary, dbType, tbTitle, tbSummary, tbRecordCount,
-    fdTitle, fdSummary, fdDataType, fdDataLength, fdAllowNull, fdKey, fdDefaultValue } = state.formManager;
+    const { showDBModal, showTableModal, showFieldModal, showProjectModal } = state.modalManager;
+    const { authUser, userId, dbTitle, dbSummary, dbType, tbTitle, tbSummary, tbRecordCount,
+    fdTitle, fdSummary, fdDataType, fdDataLength, fdAllowNull, fdKey, fdDefaultValue,
+    prjTitle, prjSummary, prjWebsite } = state.formManager;
 
     // Filter the list of databases
     let dbList;
@@ -227,23 +224,29 @@ class Home extends Component {
       });
     }
     dbList = dbList || databases;
-
-    // Set
+    
+    // Database Form Data
     const dbData = {
       userId: userId,
       title: dbTitle,
       summary: dbSummary,
       type: dbType || 'MySQL'
     };
-
+    const isValidDB = dbTitle !== null && dbTitle !== '' &&
+    dbSummary !== null && dbSummary !== '' &&
+    dbType !== null && dbType !== '';
+    
+    // Table Form Data
     const tableData = {
       userId: userId,
       databaseId: (selectedDB) ? selectedDB._id : '',
       title: tbTitle,
-      summary: tbSummary || '',
-      recordCount: tbRecordCount || ''
+      summary: tbSummary,
+      recordCount: tbRecordCount || 0
     };
-
+    const isValidTable = tbTitle !== null && tbTitle !== '';
+    
+    // Field Form Data
     const fieldData = {
       userId: userId,
       tableId: (selectedTable) ? selectedTable._id : null,
@@ -255,12 +258,17 @@ class Home extends Component {
       key: fdKey,
       defaultValue: fdDefaultValue
     };
-
-    const isValidDB = dbTitle !== null && dbTitle !== '' &&
-      dbSummary !== null && dbSummary !== '' &&
-      dbType !== null && dbType !== '';
-    const isValidTable = tbTitle !== null && tbTitle !== '';
     const isValidField = fdTitle !== null && fdTitle !== '';
+    
+    // Project Form Data
+    const projectData = {
+      userId: userId,
+      title: prjTitle,
+      summary: prjSummary,
+      website: prjWebsite
+    };
+    const isValidProject = prjTitle !== null && prjTitle !== '' &&
+    prjSummary !== null && prjSummary !== '';
 
     return (
       <div className="App">
@@ -321,7 +329,7 @@ class Home extends Component {
                 <Label for="dbTitle">
                   Database Name <span className="required">*</span>
                 </Label>
-                <Input type="text" name="dbTitle" id="dbTitle"
+                <Input type="text" name="dbTitle" id="dbTitle" autoFocus
                   onChange={(e) => this.handleInputChange(e)} />
               </FormGroup>
               <FormGroup>
@@ -367,7 +375,7 @@ class Home extends Component {
                 <Label for="tbTitle">
                   Table Name <span className="required">*</span>
                 </Label>
-                <Input type="text" name="tbTitle" id="tbTitle"
+                <Input type="text" name="tbTitle" id="tbTitle" autoFocus
                   onChange={(e) => this.handleInputChange(e)} />
               </FormGroup>
               <FormGroup>
@@ -382,6 +390,7 @@ class Home extends Component {
               </FormGroup>
             </ModalBody>
             <ModalFooter>
+              <FormText color="muted">* Required Field</FormText>
               <Button color={`${isValidTable ? 'primary' : 'secondary'}`}
                 disabled={!isValidTable} onClick={(e) => {
                   this.toggleModal('showTableModal');
@@ -406,7 +415,7 @@ class Home extends Component {
                   Field Name <span className="required">*</span>
                 </Label>
                 <Input type="text" name="fdTitle" id="fdTitle"
-                  onChange={(e) => this.handleInputChange(e)} />
+                  onChange={(e) => this.handleInputChange(e)}/>
               </FormGroup>
               <FormGroup>
                 <Label for="fdSummary">Description</Label>
@@ -418,6 +427,7 @@ class Home extends Component {
                   <FormGroup>
                     <Label for="fdDataType">Data Type</Label>
                     <Input type="select" name="fdDataType" id="fdDataType"
+                      defaultValue="varchar"
                       onChange={(e) => this.handleInputChange(e)}>
                       <option>boolean</option>
                       <option>datetime</option>
@@ -457,6 +467,7 @@ class Home extends Component {
               </div>
             </ModalBody>
             <ModalFooter>
+              <FormText color="muted">* Required Field</FormText>
               <Button color={`${isValidField ? 'primary' : 'secondary'}`}
                 disabled={!isValidField} onClick={(e) => {
                   this.toggleModal('showFieldModal');
@@ -465,6 +476,49 @@ class Home extends Component {
               <Button color="danger" onClick={() => this.toggleModal('showFieldModal')}>
                 Cancel
               </Button>
+            </ModalFooter>
+          </Form>
+        </Modal>
+
+        {/* Project Modal */}
+        <Modal isOpen={showProjectModal} toggle={() => this.toggleModal('showProjectModal')}>
+          <Form>
+            <ModalHeader toggle={() => this.toggleModal('showProjectModal')}>
+              Add Project
+            </ModalHeader>
+            <ModalBody>
+              <FormGroup>
+                <Label for="prjTitle">
+                  Project Name <span className="required">*</span>
+                </Label>
+                <Input type="text" name="prjTitle" id="prjTitle"
+                  onChange={(e) => this.handleInputChange(e)} />
+              </FormGroup>
+              <FormGroup>
+                <Label for="prjSummary">
+                  Description <span className="required">*</span>
+                </Label>
+                <Input type="textarea" name="prjSummary" id="prjSummary"
+                  onChange={(e) => this.handleInputChange(e)}/>
+              </FormGroup>
+              <FormGroup>
+                <Label for="prjWebsite">
+                  Website
+                </Label>
+                <Input type="url" name="prjWebsite" id="prjWebsite"
+                  onChange={(e) => this.handleInputChange(e)} />
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <FormText color="muted">* Required Field</FormText>
+              <Button color={`${isValidProject ? 'primary' : 'secondary'}`}
+                disabled={!isValidProject}
+                onClick={(e) => {
+                  this.addProjectToDB(e, selectedDB._id, projectData);
+                  this.toggleModal('showProjectModal');
+                }}>Save</Button>{' '}
+              <Button color="danger"
+                onClick={() => this.toggleModal('showProjectModal')}>Cancel</Button>
             </ModalFooter>
           </Form>
         </Modal>

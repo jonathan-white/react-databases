@@ -125,43 +125,6 @@ const mapDispatchToDBColumnProps = (dispatch) => {
           error: err
         }));
     },
-    handleInputChange: (event) => {
-      dispatch({
-        type: 'ADD_INPUT_CHANGE',
-        name: event.target.name,
-        value: event.target.value
-      })
-    },
-    addProjectToDB: (event, dbId, projData) => {
-      event.preventDefault();
-
-      API.addProject(projData)
-        .then(resp => {
-          // Link new project to the database
-          API.addDBProject(dbId, { projectId: resp.data._id })
-            .then(result => {
-              // this.setState({ db: result.data });
-              dispatch({
-                type: 'REFRESH_DB',
-                database: resp.data
-              });
-            })
-            .catch(err => dispatch({
-              type: 'RECORD_ERROR',
-              error: err
-            }));
-
-          // Reset the error
-          dispatch({
-            type: 'RECORD_ERROR',
-            error: null
-          });
-        })
-        .catch(err => dispatch({
-          type: 'RECORD_ERROR',
-          error: err
-        }));
-    },
     removeProjectFromDB: (dbId, prjId) => {
       API.removeDBProject(dbId, {projectId: prjId})
         .then(resp => {
@@ -187,17 +150,9 @@ const mapDispatchToDBColumnProps = (dispatch) => {
   }
 };
 
-const DatabaseCol = connect(
-  mapStateToDBColumnProps,
-  mapDispatchToDBColumnProps
-)(({ db, editMode, editTitle, dbTitle, dbSummary, dbType, hasChangedTitle,
-  hasChangedSummary, hasChangedType, projectModal, prjTitle, prjSummary,
-  prjWebsite, editDatabase, toggleDbEditState, setDbEditState, removeDB,
-  toggleDbSelection, submitDbChanges, refreshDBList, addProjectToDB,
-  removeProjectFromDB, toggleModal, handleInputChange, userId }) => {
-
-  const isValidProject = prjTitle !== null && prjTitle !== '' &&
-    prjSummary !== null && prjSummary !== '';
+const DatabaseEntry = ({ db, editMode, editTitle, dbTitle, dbSummary, dbType, hasChangedTitle,
+  hasChangedSummary, hasChangedType, editDatabase, toggleDbEditState, setDbEditState, removeDB,
+  toggleDbSelection, submitDbChanges, removeProjectFromDB, toggleModal, userId }) => {
 
   return (
     <div className="col-4 db-col">
@@ -320,54 +275,13 @@ const DatabaseCol = connect(
           </CardFooter>
         </Collapse>
       </Card>
-      <Modal isOpen={projectModal} toggle={() => toggleModal('showProjectModal')}>
-        <Form>
-          <ModalHeader toggle={() => toggleModal('showProjectModal')}>
-            Add Project
-          </ModalHeader>
-          <ModalBody>
-            <FormGroup>
-              <Label for="prjTitle">
-                Project Name <span className="required">*</span>
-              </Label>
-              <Input type="text" name="prjTitle" id="prjTitle"
-                onChange={(e) => handleInputChange(e)} />
-            </FormGroup>
-            <FormGroup>
-              <Label for="prjSummary">
-                Description <span className="required">*</span>
-              </Label>
-              <Input type="textarea" name="prjSummary" id="prjSummary"
-                onChange={(e) => handleInputChange(e)}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="prjWebsite">
-                Website
-              </Label>
-              <Input type="url" name="prjWebsite" id="prjWebsite"
-                onChange={(e) => handleInputChange(e)} />
-            </FormGroup>
-          </ModalBody>
-          <ModalFooter>
-            <FormText color="muted">* Required Field</FormText>
-            <Button color={`${isValidProject ? 'primary' : 'secondary'}`}
-              disabled={!isValidProject}
-              onClick={(e) => {
-                addProjectToDB(e, db._id, {
-                  title: prjTitle,
-                  summary: prjSummary,
-                  website: prjWebsite
-                });
-
-                toggleModal('showProjectModal');
-              }}>Save</Button>{' '}
-            <Button color="danger"
-              onClick={() => toggleModal('showProjectModal')}>Cancel</Button>
-          </ModalFooter>
-        </Form>
-      </Modal>
     </div>
   )
-});
+};
+
+const DatabaseCol = connect(
+  mapStateToDBColumnProps,
+  mapDispatchToDBColumnProps
+)(DatabaseEntry);
 
 export default DatabaseCol;

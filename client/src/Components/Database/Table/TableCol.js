@@ -48,13 +48,13 @@ const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleMo
   const removeTable = (id) => {
     API.removeTable(userId,id)
       .then(() => dbAction(userId, 'UPDATE_TABLES'))
-      .catch(err => updateError());
+      .catch(err => updateError(err));
   }
 
   const removeField = (id) => {
     API.removeField(userId,id)
       .then(() => dbAction(userId, 'UPDATE_FIELDS'))
-      .catch(err => updateError());
+      .catch(err => updateError(err));
   };
 
   return (
