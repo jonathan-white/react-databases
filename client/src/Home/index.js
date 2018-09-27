@@ -6,8 +6,10 @@ import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter,
 
 import logo from '../images/gear.svg';
 import DatabaseList from '../Components/Database';
-import Login from '../Components/Login';
+import LoginForm from '../Components/Login';
+import LogoutButton from '../Components/Logout';
 import API from '../utils/API';
+import { auth } from  '../firebase';
 
 class Home extends Component {
   constructor(props){
@@ -22,9 +24,31 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    // this.refreshDBList(); //To be removed
-
     const { store } = this.context;
+
+    auth.hasAuthStateChanged((user) => {
+      if(user){
+        console.log('user is signed in.');
+        store.dispatch({
+          type: 'AUTHENTICATED_USER',
+          user: user
+        });
+
+        // Fetch user's databases
+        API.getDatabases(user.uid)
+          .then(resp => store.dispatch({
+            type: 'REFRESH_DB_LIST',
+            databases: resp.data
+          }))
+          .catch(err => store.dispatch({
+            type: 'RECORD_ERROR',
+            error: err
+          }));
+      } else {
+        console.log('No user is signed in.');
+      }
+    })
+
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
@@ -41,6 +65,21 @@ class Home extends Component {
     API.getDatabases(state.formManager.userId)
       .then(resp => store.dispatch({
         type: 'REFRESH_DB_LIST',
+        databases: resp.data
+      }))
+      .catch(err => store.dispatch({
+        type: 'RECORD_ERROR',
+        error: err
+      }));
+  };
+
+  displayNewDB() {
+    const { store } = this.context;
+    const state = store.getState();
+
+    API.getDatabases(state.formManager.userId)
+      .then(resp => store.dispatch({
+        type: 'DISPLAY_NEW_DB',
         databases: resp.data
       }))
       .catch(err => store.dispatch({
@@ -77,19 +116,39 @@ class Home extends Component {
   // Create API
   addDatabase(event, newDB) {
     event.preventDefault();
-    console.log('newDB:',newDB);
+    const { store } = this.context;
 
     API.addDatabase(newDB)
-      .then(() => this.refreshDBList())
+      .then(() => {
+        API.getDatabases(newDB.userId)
+          .then(resp => store.dispatch({
+            type: 'DISPLAY_NEW_DB',
+            databases: resp.data
+          }))
+          .catch(err => store.dispatch({
+            type: 'RECORD_ERROR',
+            error: err
+          }));
+      })
       .catch(err => this.setState({error: err}));
   };
 
   addTable(event, newTable) {
     event.preventDefault();
-    console.log('newTable:',newTable);
+    const { store } = this.context;
 
     API.addTable(newTable)
-      .then(() => this.refreshSelectedDB())
+      .then(() =>
+        API.getDatabases(newTable.userId)
+        .then(resp => store.dispatch({
+          type: 'DISPLAY_NEW_TB',
+          databases: resp.data
+        }))
+        .catch(err => store.dispatch({
+          type: 'RECORD_ERROR',
+          error: err
+        }))
+      )
       .catch(err => this.setState({error: err}));
   };
 
@@ -98,7 +157,7 @@ class Home extends Component {
     console.log('newField:',newField);
 
     API.addField(newField)
-      .then(() => this.refreshSelectedDB())
+      .then(() => this.displayNewDB())
       .catch(err => this.setState({error: err}));
   };
 
@@ -111,7 +170,7 @@ class Home extends Component {
 
   removeTable(userId,id){
     API.removeTable(userId,id)
-      .then(() => this.refreshSelectedDB())
+      .then(() => this.refreshDBList())
       .catch(err => this.setState({error: err}));
   };
 
@@ -126,7 +185,7 @@ class Home extends Component {
             this.setState({selectedField: null});
           }
         }
-        this.refreshSelectedDB();
+        this.refreshDBList();
       })
       .catch(err => this.setState({error: err}));
   };
@@ -210,51 +269,55 @@ class Home extends Component {
 
     return (
       <div className="App">
-        <header className={`App-header ${authUser ? 'signed-in' : ''}`}>
+        <header className={`${authUser ? 'signed-in' : ''}`}>
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Database Management</h1>
-          <Login />
+          <LoginForm />
+          {authUser && <LogoutButton /> }
         </header>
-        <div className="container my-4">
-          <div className="row">
-            <div className="col-4">
-              <Input type="text" className="search" placeholder="Search..."
-                onChange={(e) => {
-                  store.dispatch({
-                    type: 'SEARCH_QUERY',
-                    query: e.target.value
-                  });
-                }}
+        {authUser && (
+          <div className="container my-4">
+            <div className="row">
+              <div className="col-4">
+                <Input type="text" className="search" placeholder="Search..."
+                  onChange={(e) => {
+                    store.dispatch({
+                      type: 'SEARCH_QUERY',
+                      query: e.target.value
+                    });
+                  }}
+                />
+              </div>
+            </div>
+            <div className="row column-headers">
+              <div className="col-4">
+                <h4>
+                  <span className="mr-2">Databases</span>
+                  <FontAwesomeIcon className="btn-add text-success"
+                    icon="plus-circle" onClick={() => this.toggleModal('showDBModal')} />
+                </h4>
+              </div>
+              <div className="col-4">
+                <h4>Tables</h4>
+              </div>
+              <div className="col-4">
+                <h4>Field Details</h4>
+              </div>
+            </div>
+            <div className="row">
+              <DatabaseList
+                databases={dbList}
+                addDatabase={this.addDatabase}
+                addTable={this.addTable}
+                addField={this.addField}
+                removeDB={this.removeDB}
+                removeTable={this.removeTable}
+                removeField={this.removeField}
               />
             </div>
           </div>
-          <div className="row column-headers">
-            <div className="col-4">
-              <h4>
-                <span className="mr-2">Databases</span>
-                <FontAwesomeIcon className="btn-add text-success"
-                  icon="plus-circle" onClick={() => this.toggleModal('showDBModal')} />
-              </h4>
-            </div>
-            <div className="col-4">
-              <h4>Tables</h4>
-            </div>
-            <div className="col-4">
-              <h4>Field Details</h4>
-            </div>
-          </div>
-          <div className="row">
-            <DatabaseList
-              databases={dbList}
-              addDatabase={this.addDatabase}
-              addTable={this.addTable}
-              addField={this.addField}
-              removeDB={this.removeDB}
-              removeTable={this.removeTable}
-              removeField={this.removeField}
-            />
-          </div>
-        </div>
+        )}
+        
         {/* New Database */}
         <Modal isOpen={showDBModal} toggle={() => this.toggleModal('showDBModal')}>
           <Form>

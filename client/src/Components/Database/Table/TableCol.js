@@ -14,38 +14,38 @@ const mapStateToTBColumnProps = (state) => {
     tables: state.dbManager.tables,
     selectedDB: state.dbManager.selectedDB,
     selectedTable: state.dbManager.selectedTable,
-    // Table Editor
-    tbEditMode: state.dbManager.editor.table.tbEditMode,
-    tbEditTitle: state.dbManager.editor.table.tbEditTitle,
-    tbTitle: state.dbManager.editor.table.tbTitle,
-    tbSummary: state.dbManager.editor.table.tbSummary,
-    tbRecordCount: state.dbManager.editor.table.tbRecordCount,
-    tbTitleChanged: state.dbManager.editor.table.tbTitleChanged,
-    tbSummaryChanged: state.dbManager.editor.table.tbSummaryChanged,
-    tbRecordCountChanged: state.dbManager.editor.table.tbRecordCountChanged,
+    // // Table Editor
+    // tbEditMode: state.dbManager.editor.table.tbEditMode,
+    // tbEditTitle: state.dbManager.editor.table.tbEditTitle,
+    // tbTitle: state.dbManager.editor.table.tbTitle,
+    // tbSummary: state.dbManager.editor.table.tbSummary,
+    // tbRecordCount: state.dbManager.editor.table.tbRecordCount,
+    // tbTitleChanged: state.dbManager.editor.table.tbTitleChanged,
+    // tbSummaryChanged: state.dbManager.editor.table.tbSummaryChanged,
+    // tbRecordCountChanged: state.dbManager.editor.table.tbRecordCountChanged,
 
-    // Table Editor
-    fdEditMode: state.dbManager.editor.field.fdEditMode,
-    fdEditTitle: state.dbManager.editor.field.fdEditTitle,
-    fdTitle: state.dbManager.editor.field.fdTitle,
-    fdSummary: state.dbManager.editor.field.fdSummary,
-    fdDataType: state.dbManager.editor.field.fdDataType,
-    fdDataLength: state.dbManager.editor.field.fdDataLength,
-    fdAllowNull: state.dbManager.editor.field.fdAllowNull,
-    fdKey: state.dbManager.editor.field.fdKey,
-    fdDefaultValue: state.dbManager.editor.field.fdDefaultValue,
+    // // Table Editor
+    // fdEditMode: state.dbManager.editor.field.fdEditMode,
+    // fdEditTitle: state.dbManager.editor.field.fdEditTitle,
+    // fdTitle: state.dbManager.editor.field.fdTitle,
+    // fdSummary: state.dbManager.editor.field.fdSummary,
+    // fdDataType: state.dbManager.editor.field.fdDataType,
+    // fdDataLength: state.dbManager.editor.field.fdDataLength,
+    // fdAllowNull: state.dbManager.editor.field.fdAllowNull,
+    // fdKey: state.dbManager.editor.field.fdKey,
+    // fdDefaultValue: state.dbManager.editor.field.fdDefaultValue,
 
-    fdTitleChanged: state.dbManager.editor.field.fdTitleChanged,
-    fdSummaryChanged: state.dbManager.editor.field.fdSummaryChanged,
-    fdDataTypeChanged: state.dbManager.editor.field.fdDataTypeChanged,
-    fdDataLengthChanged: state.dbManager.editor.field.fdDataLengthChanged,
-    fdAllowNullChanged: state.dbManager.editor.field.fdAllowNullChanged,
-    fdKeyChanged: state.dbManager.editor.field.fdKeyChanged,
-    fdDefaultValueChanged: state.dbManager.editor.field.fdDefaultValueChanged,
+    // fdTitleChanged: state.dbManager.editor.field.fdTitleChanged,
+    // fdSummaryChanged: state.dbManager.editor.field.fdSummaryChanged,
+    // fdDataTypeChanged: state.dbManager.editor.field.fdDataTypeChanged,
+    // fdDataLengthChanged: state.dbManager.editor.field.fdDataLengthChanged,
+    // fdAllowNullChanged: state.dbManager.editor.field.fdAllowNullChanged,
+    // fdKeyChanged: state.dbManager.editor.field.fdKeyChanged,
+    // fdDefaultValueChanged: state.dbManager.editor.field.fdDefaultValueChanged,
 
-    // Modals
-    showTableModal: state.modalManager.showTableModal,
-    showFieldModal: state.modalManager.showFieldModal,
+    // // Modals
+    // showTableModal: state.modalManager.showTableModal,
+    // showFieldModal: state.modalManager.showFieldModal,
   }
 };
 
@@ -82,13 +82,7 @@ const mapDispatchToTBColumnProps = (dispatch) => {
 const TableCol = connect(
   mapStateToTBColumnProps,
   mapDispatchToTBColumnProps
-)(({ tables, selectedDB, selectedTable, tbEditMode, tbEditTitle, tbTitle,
-  tbSummary, tbRecordCount, hasChangedTitle, hasChangedSummary,
-  hasChangedRecordCount, fdEditMode, fdEditTitle, fdTitle, fdSummary,
-  fdDataType, fdDataLength, fdAllowNull, fdKey, fdDefaultValue, fdTitleChanged,
-  fdSummaryChanged, fdDataTypeChanged, fdDataLengthChanged, fdAllowNullChanged,
-  fdKeyChanged, fdDefaultValueChanged, showTableModal, showFieldModal,
-  handleInputChange, toggleModal, updateError, updateSelectedDB, dbSelected }) => {
+)(({ tables, selectedDB, toggleModal, updateError, updateSelectedDB, dbSelected }) => {
 
     const refreshSelectedDB = () => {
       if(selectedDB) {
@@ -115,18 +109,15 @@ const TableCol = connect(
 
   return (
     <div className="col-4 table-col">
-      {(tables && dbSelected) && tables.map(tbl => (
-        <TableRecord table={tbl} key={`${selectedDB._id}-${tbl._id}`}
+      {(tables && dbSelected) && tables.map(table => (
+        <TableRecord table={table} key={`${selectedDB._id}-${table._id}`}
           toggleModal={toggleModal}
           removeTable={removeTable} removeField={removeField}/>
       ))
       }
       {dbSelected &&
-        <Button color="primary" className="w-100" onClick={() =>
-          toggleModal('showTableModal')
-        }>
-          <FontAwesomeIcon className="btn-add text-white"
-          icon="plus-circle" size="2x" />
+        <Button color="primary" className="w-100" onClick={() => toggleModal('showTableModal')}>
+          <FontAwesomeIcon className="btn-add text-white" icon="plus-circle" size="2x" />
         </Button>
       }
     </div>

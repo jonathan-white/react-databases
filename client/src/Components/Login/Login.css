@@ -12,22 +12,20 @@
   margin-bottom: 10px;
 }
 
-.App-header {
+header {
   height: 100vh;
 }
-.App-header + .container {
+header + .container {
   display: none;
 }
 
-.App-header.signed-in {
-  /* height: initial; */
+header.signed-in {
   animation: scroll_up 1s 200ms forwards;
 }
-.App-header.signed-in .login {
-  /* display: none; */
+header.signed-in .login {
   animation: fadeout 1s forwards;
 }
-.App-header.signed-in + .container {
+header.signed-in + .container {
   display: block;
 }
 

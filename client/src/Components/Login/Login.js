@@ -33,6 +33,8 @@ const mapsDispatchToLoginProps = (dispatch) => {
             user: resp.user
           });
 
+          localStorage.setItem('uid',resp.user.uid);
+
           // Fetch user's databases
           API.getDatabases(resp.user.uid)
             .then(resp => dispatch({
@@ -56,10 +58,10 @@ const mapsDispatchToLoginProps = (dispatch) => {
 const LoginForm = ({ username, password, error, handleInputChange, submitCredentials }) => (
     <div className="login">
       <Form>
-        <Input type="text" autoComplete="off" name="username"
+        <Input id="username" type="text" autoComplete="off" name="username"
           placeholder="Username" onChange={(e) => handleInputChange(e)}
         />
-        <Input type="password" autoComplete="off" name="password"
+        <Input id="password" type="password" autoComplete="off" name="password"
           placeholder="Password" onChange={(e) => handleInputChange(e)}
         />
         <Button color="dark" onClick={(e) => submitCredentials(e, username, password)}>

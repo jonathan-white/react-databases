@@ -76,6 +76,38 @@ const dbManager = (
         selectedTable: null,
         selectedField: null
       }
+    case 'DISPLAY_NEW_DB':
+      return {
+        ...state,
+        databases: action.databases.map(d => {
+          if(state.selectedDB){
+            if(state.selectedDB._id === d._id){
+              return {...d, isExpanded: true }
+            } else {
+              return {...d, isExpanded: false }
+            }
+          } else {
+            return {...d, isExpanded: false }
+          }
+        })
+      }
+    case 'DISPLAY_NEW_TB':
+      return {
+        ...state,
+        databases: action.databases.map(d => {
+          if(d._id === state.selectedDB._id){
+            return {
+              ...d,
+              isExpanded: true
+            }
+          } else {
+            return {
+              ...d, 
+              isExpanded: false
+            }
+          }
+        })
+      }
     case 'REFRESH_DB':
       return {
         ...state,
@@ -372,8 +404,14 @@ const formManager = (state = {}, action) => {
         ...state,
         authUser: action.user,
         userId: action.user.uid,
-        username: null,
-        password: null
+        username: '',
+        password: ''
+      }
+    case 'LOGOUT_USER':
+      return {
+        ...state,
+        authUser: null,
+        userId: null
       }
     default:
       return state;

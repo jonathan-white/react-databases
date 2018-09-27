@@ -20,3 +20,6 @@ export const doPasswordReset = (email) =>
 // Password Change
 export const doPasswordUpdate = (password) =>
   auth.currentUser.updatePassword(password);
+
+export const hasAuthStateChanged = (cb) => 
+  auth.onAuthStateChanged(cb);

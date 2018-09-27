@@ -1,0 +1,15 @@
+.btn-logout {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+header.signed-in .logout {
+	animation: fadein 1s forwards;
+}
+
+@keyframes fadein {
+	0% { opacity: 0; display: none}
+	1% { opacity: 0.00001; display: block; }
+	100% { opacity: 1;}
+}
