@@ -96,7 +96,21 @@ const dbManager = (
         ...state,
         databases: action.databases.map(d => {
           if(d._id === state.selectedDB._id){
-            return { ...d, isExpanded: true }
+            if(state.selectedTable){
+              return {
+                ...d,
+                tables: d.tables.map(t => {
+                  if(t._id === state.selectedTable._id){
+                    return {...t, isExpanded: true}
+                  } else {
+                    return {...t, isExpanded: false}
+                  }
+                }),
+                isExpanded: true,
+              }
+            } else {
+              return { ...d, isExpanded: true }
+            }
           } else {
             return { ...d, isExpanded: false }
           }

@@ -12,11 +12,12 @@ class TableRecord extends Component {
     this.state = {
       editMode: false,
       editTitle: false,
+      editRecordCount: false,
 
       // Table state
-      tbTitle: this.props.table.title,
-      tbSummary: this.props.table.summary,
-      tbRecordCount: this.props.table.recordCount,
+      tbTitle: this.props.table.title || '',
+      tbSummary: this.props.table.summary || '',
+      tbRecordCount: this.props.table.recordCount || 0,
 
       // Change status
       tbTitleChanged: false,
@@ -51,6 +52,10 @@ class TableRecord extends Component {
     }))
   };
 
+  setTbEditState = (name, value) => {
+    this.setState({ [name]: value});
+  };
+
   handleInputChange = (e) => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
@@ -66,7 +71,12 @@ class TableRecord extends Component {
 
   submitFormData = () => {
     const { store } = this.context;
-    let tableData = { userId: store.formManager.userId};
+    const state = store.getState();
+    
+    this.setTbEditState('editTitle',false);
+    this.setTbEditState('editRecordCount',false);
+
+    let tableData = { userId: state.formManager.userId};
     if(this.state.tbTitleChanged) {
       tableData = {...tableData, title: this.state.tbTitle};
     }
@@ -77,16 +87,19 @@ class TableRecord extends Component {
       tableData = {...tableData, recordCount: this.state.tbRecordCount};
     }
 
-    API.updateTable(this.props.table._id, tableData)
-      .then(resp => 
-        API.getDatabases(tableData.userId)
-        .then(resp => store.dispatch({
-          type: 'UPDATE_TABLES',
-          databases: resp.data
-        }))
-        .catch(err => this.updateError(err))
-      )
-      .catch(err => this.updateError(err));
+    // If something has changed, send updated key value pairs to server
+    if(Object.keys(tableData).length > 1 && tableData.constructor === Object){
+      API.updateTable(this.props.table._id, tableData)
+        .then(resp => 
+          API.getDatabases(tableData.userId)
+          .then(resp => store.dispatch({
+            type: 'UPDATE_TABLES',
+            databases: resp.data
+          }))
+          .catch(err => this.updateError(err))
+        )
+        .catch(err => this.updateError(err));
+    }
   };
   
 
@@ -94,7 +107,7 @@ class TableRecord extends Component {
     const { store } = this.context;
 
     const { table, toggleModal, removeTable, removeField } = this.props;
-    const { editMode, editTitle, tbTitle, tbSummary, tbRecordCount } = this.state;
+    const { editMode, editTitle, editRecordCount, tbTitle, tbSummary, tbRecordCount } = this.state;
 
     return(
       <Card className={`mb-2 table-item ${table.isExpanded ? 'expanded': ''}`}
@@ -107,9 +120,9 @@ class TableRecord extends Component {
                   {editTitle 
                     ? (<input type="text" name="tbTitle" value={tbTitle} 
                     autoComplete="off" onBlur={() => this.toggleTbEditState('editTitle')}
-                    onChanged={(e) => {
+                    onChange={(e) => {
                       this.handleInputChange(e);
-                      this.toggleTbEditState('dbTitleChanged');
+                      this.setTbEditState('tbTitleChanged', true);
                     }}
                     />)
                     : (<div onClick={() => this.toggleTbEditState('editTitle')}>
@@ -121,7 +134,20 @@ class TableRecord extends Component {
               }
             </span>
             <span>
-              <Badge className="recordsCount" color="info">Records: {table.recordCount}</Badge>
+              <Badge className="recordsCount" color="info">
+                {editRecordCount
+                  ? (<input type="number" className="badge-input" name="tbRecordCount" value={tbRecordCount} 
+                    onBlur={() => this.toggleTbEditState('editRecordCount')}
+                    onChange={(e) => {
+                      this.handleInputChange(e);
+                      this.setTbEditState('tbRecordCountChanged', true);
+                    }}
+                  />)
+                  : (<div onClick={() => this.toggleTbEditState('editRecordCount')}>
+                  Records: {table.recordCount}
+                  </div>)
+                }
+              </Badge>
               {table.isExpanded
                 ? <FontAwesomeIcon className="up-arrow" icon="angle-up" />
                 : <FontAwesomeIcon icon="angle-down" />
@@ -149,7 +175,7 @@ class TableRecord extends Component {
                 ? (<textarea className="summary" rows="3" name="tbSummary"
                 value={tbSummary} onChange={(e) => {
                   this.handleInputChange(e);
-                  this.toggleTbEditState('tbSummaryChanged');
+                  this.setTbEditState('tbSummaryChanged', true);
                 }} />)
                 : (tbSummary)
               }
