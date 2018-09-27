@@ -76,7 +76,7 @@ const dbManager = (
         selectedTable: null,
         selectedField: null
       }
-    case 'DISPLAY_NEW_DB':
+    case 'UPDATE_DATABASES':
       return {
         ...state,
         databases: action.databases.map(d => {
@@ -91,13 +91,31 @@ const dbManager = (
           }
         })
       }
-    case 'DISPLAY_NEW_TB':
+    case 'UPDATE_TABLES':
+      return {
+        ...state,
+        databases: action.databases.map(d => {
+          if(d._id === state.selectedDB._id){
+            return { ...d, isExpanded: true }
+          } else {
+            return { ...d, isExpanded: false }
+          }
+        })
+      }
+    case 'UPDATE_FIELDS':
       return {
         ...state,
         databases: action.databases.map(d => {
           if(d._id === state.selectedDB._id){
             return {
               ...d,
+              tables: d.tables.map(t => {
+                if(t._id === state.selectedTable._id){
+                  return {...t, isExpanded: true}
+                } else {
+                  return {...t, isExpanded: false}
+                }
+              }),
               isExpanded: true
             }
           } else {
@@ -105,17 +123,6 @@ const dbManager = (
               ...d, 
               isExpanded: false
             }
-          }
-        })
-      }
-    case 'REFRESH_DB':
-      return {
-        ...state,
-        databases: state.databases.map(d => {
-          if(d._id === action.database._id){
-            return {...action.database, isExpanded: false}
-          } else {
-            return {...d, isExpanded: false}
           }
         })
       }

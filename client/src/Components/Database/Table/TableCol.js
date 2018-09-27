@@ -5,59 +5,18 @@ import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import TableRecord from './TableRecord';
-// import TableModalDisplay from './TableModalDisplay';
-import './Table.css';
 import API from '../../../utils/API';
+import './Table.css';
 
 const mapStateToTBColumnProps = (state) => {
   return {
-    tables: state.dbManager.tables,
     selectedDB: state.dbManager.selectedDB,
-    selectedTable: state.dbManager.selectedTable,
-    // // Table Editor
-    // tbEditMode: state.dbManager.editor.table.tbEditMode,
-    // tbEditTitle: state.dbManager.editor.table.tbEditTitle,
-    // tbTitle: state.dbManager.editor.table.tbTitle,
-    // tbSummary: state.dbManager.editor.table.tbSummary,
-    // tbRecordCount: state.dbManager.editor.table.tbRecordCount,
-    // tbTitleChanged: state.dbManager.editor.table.tbTitleChanged,
-    // tbSummaryChanged: state.dbManager.editor.table.tbSummaryChanged,
-    // tbRecordCountChanged: state.dbManager.editor.table.tbRecordCountChanged,
-
-    // // Table Editor
-    // fdEditMode: state.dbManager.editor.field.fdEditMode,
-    // fdEditTitle: state.dbManager.editor.field.fdEditTitle,
-    // fdTitle: state.dbManager.editor.field.fdTitle,
-    // fdSummary: state.dbManager.editor.field.fdSummary,
-    // fdDataType: state.dbManager.editor.field.fdDataType,
-    // fdDataLength: state.dbManager.editor.field.fdDataLength,
-    // fdAllowNull: state.dbManager.editor.field.fdAllowNull,
-    // fdKey: state.dbManager.editor.field.fdKey,
-    // fdDefaultValue: state.dbManager.editor.field.fdDefaultValue,
-
-    // fdTitleChanged: state.dbManager.editor.field.fdTitleChanged,
-    // fdSummaryChanged: state.dbManager.editor.field.fdSummaryChanged,
-    // fdDataTypeChanged: state.dbManager.editor.field.fdDataTypeChanged,
-    // fdDataLengthChanged: state.dbManager.editor.field.fdDataLengthChanged,
-    // fdAllowNullChanged: state.dbManager.editor.field.fdAllowNullChanged,
-    // fdKeyChanged: state.dbManager.editor.field.fdKeyChanged,
-    // fdDefaultValueChanged: state.dbManager.editor.field.fdDefaultValueChanged,
-
-    // // Modals
-    // showTableModal: state.modalManager.showTableModal,
-    // showFieldModal: state.modalManager.showFieldModal,
+    userId: state.formManager.userId,
   }
 };
 
 const mapDispatchToTBColumnProps = (dispatch) => {
   return {
-    handleInputChange: (name, value) => {
-      dispatch({
-        type: 'ADD_INPUT_CHANGE',
-        name: name,
-        value: value
-      })
-    },
     toggleModal: (modalName) => {
       dispatch({
         type: 'TOGGLE_MODAL',
@@ -70,40 +29,31 @@ const mapDispatchToTBColumnProps = (dispatch) => {
         error: error
       })
     },
-    updateSelectedDB: (db) => {
-      dispatch({
-        type: 'UPDATE_SELECTED_DB',
-        database: db
-      })
+    dbAction: (userId, actionType) => {
+      API.getDatabases(userId)
+        .then(resp => dispatch({
+          type: actionType,
+          databases: resp.data
+        }))
+        .catch(err => dispatch({
+          type: 'RECORD_ERROR',
+          error: err
+        }))
     }
   }
 };
 
-const TableCol = connect(
-  mapStateToTBColumnProps,
-  mapDispatchToTBColumnProps
-)(({ tables, selectedDB, toggleModal, updateError, updateSelectedDB, dbSelected }) => {
-
-    const refreshSelectedDB = () => {
-      if(selectedDB) {
-        API.getDatabase(selectedDB._id)
-          .then(resp => {
-            updateSelectedDB(resp.data[0]);
-          })
-          .catch(err => this.setState({ error: err }));
-      }
-    };
+const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleModal, dbSelected }) => {
 
   const removeTable = (id) => {
-    API.removeTable(id)
-      .then(() => refreshSelectedDB())
+    API.removeTable(userId,id)
+      .then(() => dbAction(userId, 'UPDATE_TABLES'))
       .catch(err => updateError());
   }
+
   const removeField = (id) => {
-    API.removeField(id)
-      .then(() => {
-        refreshSelectedDB();
-      })
+    API.removeField(userId,id)
+      .then(() => dbAction(userId, 'UPDATE_FIELDS'))
       .catch(err => updateError());
   };
 
@@ -122,6 +72,11 @@ const TableCol = connect(
       }
     </div>
   )
-})
+}
+
+const TableCol = connect(
+  mapStateToTBColumnProps,
+  mapDispatchToTBColumnProps
+)(TableList)
 
 export default TableCol;

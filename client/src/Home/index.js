@@ -73,21 +73,6 @@ class Home extends Component {
       }));
   };
 
-  displayNewDB() {
-    const { store } = this.context;
-    const state = store.getState();
-
-    API.getDatabases(state.formManager.userId)
-      .then(resp => store.dispatch({
-        type: 'DISPLAY_NEW_DB',
-        databases: resp.data
-      }))
-      .catch(err => store.dispatch({
-        type: 'RECORD_ERROR',
-        error: err
-      }));
-  };
-
   refreshSelectedDB(){
     const { store } = this.context;
     const state = store.getState();
@@ -122,7 +107,7 @@ class Home extends Component {
       .then(() => {
         API.getDatabases(newDB.userId)
           .then(resp => store.dispatch({
-            type: 'DISPLAY_NEW_DB',
+            type: 'UPDATE_DATABASES',
             databases: resp.data
           }))
           .catch(err => store.dispatch({
@@ -141,7 +126,7 @@ class Home extends Component {
       .then(() =>
         API.getDatabases(newTable.userId)
         .then(resp => store.dispatch({
-          type: 'DISPLAY_NEW_TB',
+          type: 'UPDATE_TABLES',
           databases: resp.data
         }))
         .catch(err => store.dispatch({
@@ -154,10 +139,20 @@ class Home extends Component {
 
   addField(event, newField) {
     event.preventDefault();
-    console.log('newField:',newField);
+    const { store } = this.context;
 
     API.addField(newField)
-      .then(() => this.displayNewDB())
+      .then(() => 
+        API.getDatabases(newField.userId)
+          .then(resp => store.dispatch({
+            type: 'UPDATE_FIELDS',
+            databases: resp.data
+          }))
+          .catch(err => store.dispatch({
+            type: 'RECORD_ERROR',
+            error: err
+          }))
+      )
       .catch(err => this.setState({error: err}));
   };
 
@@ -307,9 +302,6 @@ class Home extends Component {
             <div className="row">
               <DatabaseList
                 databases={dbList}
-                addDatabase={this.addDatabase}
-                addTable={this.addTable}
-                addField={this.addField}
                 removeDB={this.removeDB}
                 removeTable={this.removeTable}
                 removeField={this.removeField}

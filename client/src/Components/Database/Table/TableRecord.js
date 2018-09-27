@@ -37,7 +37,6 @@ class TableRecord extends Component {
 
   render(){
     const { store } = this.context;
-    // const state = store.getState();
 
     const { table, toggleModal, removeTable, removeField } = this.props;
 
@@ -45,7 +44,6 @@ class TableRecord extends Component {
       <Card className={`mb-2 table-item ${table.isExpanded ? 'expanded': ''}`}
         id={table._id}>
         <CardHeader className="d-flex justify-content-between" onClick={() => {
-          // this.toggleExpand();
           store.dispatch({
             type: 'TOGGLE_TBL_SELECTION',
             table: table

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Alert } from 'reactstrap';
+import { Button } from 'reactstrap';
 import { auth } from '../../firebase';
 import './Logout.css';
 
