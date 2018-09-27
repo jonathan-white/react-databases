@@ -70,7 +70,25 @@ module.exports = {
   remove: function(req, res) {
     db.Database
       .findById({ userId: req.body.userId, _id: req.params.id })
-      .then(dbModel => dbModel.remove())
+      .populate({ path: 'tables', populate: { path: 'fields' }})
+      .then(dbModel => {
+        // Delete database tables
+        dbModel.tables.forEach(table => 
+          db.Table.findById({ userId: req.body.userId, _id: table._id})
+            .populate('fields')
+            .then(dbTable => {
+              // Delete database fields
+              dbTable.fields.forEach(field => 
+                db.Field.findById({ userId: req.body.userId, _id: field._id})
+                  .then(dbField => {
+                    dbField.remove();
+                  })
+              );
+              dbTable.remove();
+            })
+        );
+        dbModel.remove();
+      })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   }

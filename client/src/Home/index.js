@@ -351,7 +351,9 @@ class Home extends Component {
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <FormText color="muted">* Required Field</FormText>
+              <FormText color="muted">
+                <span className="required">*</span> = Required Field
+              </FormText>
               <Button color={`${isValidDB ? 'primary' : 'secondary'}`}
                 disabled={!isValidDB} onClick={(e) => {
                   this.toggleModal('showDBModal');
@@ -390,7 +392,9 @@ class Home extends Component {
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <FormText color="muted">* Required Field</FormText>
+              <FormText color="muted">
+                <span className="required">*</span> = Required Field
+              </FormText>
               <Button color={`${isValidTable ? 'primary' : 'secondary'}`}
                 disabled={!isValidTable} onClick={(e) => {
                   this.toggleModal('showTableModal');
@@ -467,7 +471,9 @@ class Home extends Component {
               </div>
             </ModalBody>
             <ModalFooter>
-              <FormText color="muted">* Required Field</FormText>
+              <FormText color="muted">
+                <span className="required">*</span> = Required Field
+              </FormText>
               <Button color={`${isValidField ? 'primary' : 'secondary'}`}
                 disabled={!isValidField} onClick={(e) => {
                   this.toggleModal('showFieldModal');
@@ -510,7 +516,9 @@ class Home extends Component {
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <FormText color="muted">* Required Field</FormText>
+              <FormText color="muted">
+                <span className="required">*</span> = Required Field
+              </FormText>
               <Button color={`${isValidProject ? 'primary' : 'secondary'}`}
                 disabled={!isValidProject}
                 onClick={(e) => {

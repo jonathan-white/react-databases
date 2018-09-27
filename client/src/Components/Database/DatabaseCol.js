@@ -2,9 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Card, CardHeader, CardImg, CardText, CardBody, CardFooter,
-  CardTitle, Collapse, Input, Button, Form, FormGroup, FormText, Label,
-  Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-
+  CardTitle, Collapse, Input, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 

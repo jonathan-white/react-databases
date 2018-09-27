@@ -44,7 +44,15 @@ module.exports = {
   remove: function(req, res) {
     db.Table
       .findById({ userId: req.body.userId, _id: req.params.id })
-      .then(dbModel => dbModel.remove())
+      .then(dbModel => {
+        dbModel.fields.forEach(field => 
+          db.Field.findById({ userId: req.body.userId, _id: field._id})
+            .then(dbField => {
+              dbField.remove();
+            })
+        );
+        dbModel.remove();
+      })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   }

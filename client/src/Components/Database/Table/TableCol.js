@@ -43,7 +43,7 @@ const mapDispatchToTBColumnProps = (dispatch) => {
   }
 };
 
-const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleModal, dbSelected }) => {
+const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleModal, dbIsExpanded }) => {
 
   const removeTable = (id) => {
     API.removeTable(userId,id)
@@ -59,13 +59,13 @@ const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleMo
 
   return (
     <div className="col-4 table-col">
-      {(tables && dbSelected) && tables.map(table => (
+      {(tables && dbIsExpanded) && tables.map(table => (
         <TableRecord table={table} key={`${selectedDB._id}-${table._id}`}
           toggleModal={toggleModal}
           removeTable={removeTable} removeField={removeField}/>
       ))
       }
-      {dbSelected &&
+      {dbIsExpanded &&
         <Button color="primary" className="w-100" onClick={() => toggleModal('showTableModal')}>
           <FontAwesomeIcon className="btn-add text-white" icon="plus-circle" size="2x" />
         </Button>

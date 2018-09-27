@@ -1,63 +1,160 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Badge, Card, CardHeader, CardBody, CardFooter,
+import { Badge, Card, CardText, CardHeader, CardBody, CardFooter,
   Collapse, ListGroup, ListGroupItem, Button } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import API from '../../../utils/API';
 
 class TableRecord extends Component {
   constructor(props){
     super(props);
     this.state = {
       editMode: false,
+      editTitle: false,
 
       // Table state
-      tableTitle: null,
-      tableSummary: null,
-      tableRecordsCount: null,
+      tbTitle: this.props.table.title,
+      tbSummary: this.props.table.summary,
+      tbRecordCount: this.props.table.recordCount,
+
+      // Change status
+      tbTitleChanged: false,
+      tbSummaryChanged: false,
+      tbRecordCountChanged: false,
     };
 
-    this.toggleExpand = this.toggleExpand.bind(this);
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     const { store } = this.context;
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
   }
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     this.unsubscribe();
   }
 
-  toggleExpand() {
-    this.setState((prevState) => ({ isExpanded: !prevState.isExpanded}));
+  toggleTbSelection = (table) => {
+    const { store } = this.context;
+    store.dispatch({
+      type: 'TOGGLE_TBL_SELECTION',
+      table: table
+    })
   };
+
+  toggleTbEditState = (name) => {
+    this.setState((prevState) => ({
+      [name]: !prevState[name]
+    }))
+  };
+
+  handleInputChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
+
+  updateError(error){
+    const { store } = this.context;
+    store.dispatch({
+      type: 'RECORD_ERROR',
+      error: error
+    })
+  };
+
+  submitFormData = () => {
+    const { store } = this.context;
+    let tableData = { userId: store.formManager.userId};
+    if(this.state.tbTitleChanged) {
+      tableData = {...tableData, title: this.state.tbTitle};
+    }
+    if(this.state.tbSummaryChanged) {
+      tableData = {...tableData, summary: this.state.tbSummary};
+    }
+    if(this.state.tbRecordCountChanged) {
+      tableData = {...tableData, recordCount: this.state.tbRecordCount};
+    }
+
+    API.updateTable(this.props.table._id, tableData)
+      .then(resp => 
+        API.getDatabases(tableData.userId)
+        .then(resp => store.dispatch({
+          type: 'UPDATE_TABLES',
+          databases: resp.data
+        }))
+        .catch(err => this.updateError(err))
+      )
+      .catch(err => this.updateError(err));
+  };
+  
 
   render(){
     const { store } = this.context;
 
     const { table, toggleModal, removeTable, removeField } = this.props;
+    const { editMode, editTitle, tbTitle, tbSummary, tbRecordCount } = this.state;
 
     return(
       <Card className={`mb-2 table-item ${table.isExpanded ? 'expanded': ''}`}
         id={table._id}>
-        <CardHeader className="d-flex justify-content-between" onClick={() => {
-          store.dispatch({
-            type: 'TOGGLE_TBL_SELECTION',
-            table: table
-          });
-        }}>
-          <span className="record-title">{table.title}</span>
+        <CardHeader>
+          <div className="header-content">
+            <span className="record-title">
+              {editMode
+                ? (<div>
+                  {editTitle 
+                    ? (<input type="text" name="tbTitle" value={tbTitle} 
+                    autoComplete="off" onBlur={() => this.toggleTbEditState('editTitle')}
+                    onChanged={(e) => {
+                      this.handleInputChange(e);
+                      this.toggleTbEditState('dbTitleChanged');
+                    }}
+                    />)
+                    : (<div onClick={() => this.toggleTbEditState('editTitle')}>
+                    {tbTitle}
+                    </div>)
+                  }
+                </div>)
+                : (table.title)
+              }
+            </span>
+            <span>
+              <Badge className="recordsCount" color="info">Records: {table.recordCount}</Badge>
+              {table.isExpanded
+                ? <FontAwesomeIcon className="up-arrow" icon="angle-up" />
+                : <FontAwesomeIcon icon="angle-down" />
+              }
+            </span>
+          </div>
+          <div className={`${!editMode ? 'clickable-overlay' : ''}`}
+            onClick={() => this.toggleTbSelection(table)}></div>
           <span>
-            <span className="btn-edit mr-3">Edit</span>
-            <Badge color="info">Records: {table.recordCount}</Badge>
+            {editMode 
+              ? (<span className="btn-edit mr-3 btn-success" onClick={() => {
+                this.toggleTbEditState('editMode');
+                this.submitFormData();
+              }}>Save</span>)
+              : (<span className="btn-edit mr-3" onClick={() => 
+                this.toggleTbEditState('editMode')
+              }>Edit</span>)  
+            }
           </span>
         </CardHeader>
         <Collapse isOpen={table.isExpanded}>
           <CardBody>
-            {table.summary}
+            <CardText>
+              {editMode 
+                ? (<textarea className="summary" rows="3" name="tbSummary"
+                value={tbSummary} onChange={(e) => {
+                  this.handleInputChange(e);
+                  this.toggleTbEditState('tbSummaryChanged');
+                }} />)
+                : (tbSummary)
+              }
+            </CardText>
+            {tbSummary && <hr />}
             <ListGroup>
               {table.fields && table.fields.map(field => (
                 <ListGroupItem key={field._id} className="field-item"

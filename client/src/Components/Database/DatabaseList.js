@@ -13,10 +13,10 @@ const DatabaseList = connect()(({ databases, addTable,
       <div key={db._id} className={`row ${db.isExpanded ? 'selected' : ''}`}>
         <DatabaseCol db={db} />
         <TableCol tables={db.tables}
-          dbSelected={db.isExpanded}
+          dbIsExpanded={db.isExpanded}
           addTable={addTable} addField={addField}
           removeTable={removeTable} removeField={removeField} />
-        <FieldCol dbSelected={db.isExpanded} />
+        <FieldCol dbIsExpanded={db.isExpanded} />
       </div>
     ))}
   </div>

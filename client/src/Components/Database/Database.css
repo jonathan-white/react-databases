@@ -36,20 +36,8 @@
   justify-content: space-between;
 }
 
-.db-item .clickable-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
 .db-item .card-body {
   position: relative;
-}
-
-.db-item .card-body .summary {
-  width: 100%;
 }
 
 .db-item .card-footer .select-type {
@@ -68,5 +56,19 @@
   flex-wrap: wrap;
   margin-right: -15px;
   margin-left: -15px;
+  width: 100%;
+}
+
+/* Record-wide Editing Styles */
+
+.clickable-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card-body .summary {
   width: 100%;
 }
