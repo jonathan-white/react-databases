@@ -59,6 +59,10 @@
   width: 100%;
 }
 
+.db-col {
+  z-index: 3;
+}
+
 /* Record-wide Editing Styles */
 
 .clickable-overlay {
@@ -72,3 +76,4 @@
 .card-body .summary {
   width: 100%;
 }
+

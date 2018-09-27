@@ -96,7 +96,7 @@ header {
   padding: 5px 0;
   top: 0;
   background-color: #fff;
-  z-index: 1;
+  z-index: 4;
 }
 
 .search {

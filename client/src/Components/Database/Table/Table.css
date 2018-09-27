@@ -61,3 +61,18 @@
 .table-item .badge-input {
   width: 50px;
 }
+
+.table-col {
+  z-index: 2;
+}
+
+.reveal-tables {
+  position: relative;
+  left: -25%;
+  animation: tables_slide_right 500ms ease forwards;
+}
+
+@keyframes tables_slide_right {
+  0% { left: -25%; }
+  100% { left: 0; }
+}

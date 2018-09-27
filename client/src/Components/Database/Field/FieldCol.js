@@ -41,7 +41,7 @@ class FieldCol extends Component {
     const { dbIsExpanded } = this.props;
 
     return(
-      <div className="col-4 field-col expanded">
+      <div className={`col-4 field-col ${(field && dbIsExpanded) ? 'reveal-field' : ''}`}>
         {(field && dbIsExpanded) && (
           <Card className="mb-2 field-entry" id={field._id}>
             <CardHeader className="d-flex justify-content-between">

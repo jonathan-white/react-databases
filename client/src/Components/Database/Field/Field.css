@@ -35,3 +35,19 @@
 .field-entry .card-body {
   position: relative;
 }
+
+.field-col {
+  z-index: 1;
+}
+
+.reveal-field {
+  position: absolute;
+  left: -25%;
+  top: 100px;
+  animation: field_slide_right 500ms ease forwards;
+}
+
+@keyframes field_slide_right {
+  0% { left: -25%; top: 100px; }
+  100% { left: 0; top: 0; }
+}

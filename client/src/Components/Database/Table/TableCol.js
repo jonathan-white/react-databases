@@ -58,7 +58,7 @@ const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleMo
   };
 
   return (
-    <div className="col-4 table-col">
+    <div className={`col-4 table-col ${dbIsExpanded ? 'reveal-tables' : 'hide-tables'}`}>
       {(tables && dbIsExpanded) && tables.map(table => (
         <TableRecord table={table} key={`${selectedDB._id}-${table._id}`}
           toggleModal={toggleModal}
