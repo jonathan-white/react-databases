@@ -34,15 +34,13 @@ class FieldCol extends Component {
 
   render() {
     const { store } = this.context;
-    const state = store.getState();
 
-    const field = state.dbManager.selectedField;
-
-    const { dbIsExpanded } = this.props;
+    // const field = state.dbManager.selectedField;
+    const field = this.props.field;
 
     return(
-      <div className={`col-4 field-col ${(field && dbIsExpanded) ? 'reveal-field' : ''}`}>
-        {(field && dbIsExpanded) && (
+      <div className={`col-4 field-col`}>
+        {field && (
           <Card className="mb-2 field-entry" id={field._id}>
             <CardHeader className="d-flex justify-content-between">
               <span className="record-title">{field.title}</span>

@@ -35,7 +35,11 @@ module.exports = {
   update: function(req, res) {
     db.Field
       .findOneAndUpdate({ userId: req.body.userId, _id: req.params.id }, req.body)
-      .then(dbModel => res.json(dbModel))
+      .then(dbModel => 
+        db.Field.find({userId: req.body.userId, _id: dbModel._id})
+          .then(updatedField => res.json(updatedField))
+          .catch(err => res.status(422).json(err))
+      )
       .catch(err => res.status(422).json(err));
   },
   remove: function(req, res) {

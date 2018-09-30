@@ -76,18 +76,33 @@ const dbManager = (
         selectedTable: null,
         selectedField: null
       }
+    case 'REMOVE_DB_FROM_LIST':
+      return {
+        ...state,
+        databases: state.databases.filter(d => {
+          if(d._id !== action.databaseId){
+            return d;
+          } else {
+            return false;
+          }
+        }),
+        tables: null,
+        selectedDB: null,
+        selectedTable: null,
+        selectedField: null
+      }
     case 'UPDATE_DATABASES':
       return {
         ...state,
         databases: action.databases.map(d => {
           if(state.selectedDB){
             if(state.selectedDB._id === d._id){
-              return {...d, isExpanded: true }
+              return {...d, isExpanded: true };
             } else {
-              return {...d, isExpanded: false }
+              return {...d, isExpanded: false };
             }
           } else {
-            return {...d, isExpanded: false }
+            return {...d, isExpanded: false };
           }
         })
       }
@@ -101,18 +116,18 @@ const dbManager = (
                 ...d,
                 tables: d.tables.map(t => {
                   if(t._id === state.selectedTable._id){
-                    return {...t, isExpanded: true}
+                    return {...t, isExpanded: true};
                   } else {
-                    return {...t, isExpanded: false}
+                    return {...t, isExpanded: false};
                   }
                 }),
                 isExpanded: true,
               }
             } else {
-              return { ...d, isExpanded: true }
+              return { ...d, isExpanded: true };
             }
           } else {
-            return { ...d, isExpanded: false }
+            return { ...d, isExpanded: false };
           }
         })
       }
@@ -125,9 +140,9 @@ const dbManager = (
               ...d,
               tables: d.tables.map(t => {
                 if(t._id === state.selectedTable._id){
-                  return {...t, isExpanded: true}
+                  return {...t, isExpanded: true};
                 } else {
-                  return {...t, isExpanded: false}
+                  return {...t, isExpanded: false};
                 }
               }),
               isExpanded: true
@@ -146,32 +161,6 @@ const dbManager = (
         selectedDB: action.database,
         tables: action.database.tables
       }
-    case 'SELECT_FIELD':
-      return {
-        ...state,
-        selectedField: action.field,
-        editor: {
-          ...state.editor,
-          field: {
-            fdEditMode: false,
-            fdEditTitle: false,
-            fdTitle: action.field.title,
-            fdSummary: action.field.summary,
-            fdDataType: action.field.dataType,
-            fdDataLength: action.field.dataLength,
-            fdAllowNull: action.field.allowNull,
-            fdKey: action.field.key,
-            fdDefaultValue: action.field.defaultValue,
-            fdTitleChanged: false,
-            fdSummaryChanged: false,
-            fdDataTypeChanged: false,
-            fdDataLengthChanged: false,
-            fdNullsChanged: false,
-            fdKeyChanged: false,
-            fdDefaultValueChanged: false,
-          }
-        }
-      }
     case 'TOGGLE_DB_SELECTION':
       if(state.selectedDB) {
         if(state.selectedDB._id === action.database._id) {
@@ -181,20 +170,7 @@ const dbManager = (
             selectedDB: null,
             selectedTable: null,
             selectedField: null,
-            tables: null,
-            editor: {
-              ...state.editor,
-              database: {
-                dbEditMode: false,
-                dbEditTitle: false,
-                dbTitle: null,
-                dbSummary: null,
-                dbType: null,
-                dbTitleChanged: false,
-                dbSummaryChanged: false,
-                dbTypeChanged: false,
-              }
-            }
+            tables: null
           }
         } else {
           return {
@@ -209,20 +185,7 @@ const dbManager = (
             selectedDB: {...action.database, isExpanded: true},
             selectedTable: null,
             selectedField: null,
-            tables: action.database.tables.map(t => ({...t, isExpanded: false})),
-            editor: {
-              ...state.editor,
-              database: {
-                dbEditMode: false,
-                dbEditTitle: false,
-                dbTitle: action.database.title,
-                dbSummary: action.database.summary,
-                dbType: action.database.type,
-                dbTitleChanged: false,
-                dbSummaryChanged: false,
-                dbTypeChanged: false,
-              }
-            }
+            tables: action.database.tables.map(t => ({...t, isExpanded: false}))            
           }
         }
 
@@ -239,20 +202,7 @@ const dbManager = (
           selectedDB: {...action.database, isExpanded: true},
           selectedTable: null,
           selectedField: null,
-          tables: action.database.tables,
-          editor: {
-            ...state.editor,
-            database: {
-              dbEditMode: false,
-              dbEditTitle: false,
-              dbTitle: action.database.title,
-              dbSummary: action.database.summary,
-              dbType: action.database.type,
-              dbTitleChanged: false,
-              dbSummaryChanged: false,
-              dbTypeChanged: false,
-            }
-          }
+          tables: action.database.tables
         }
       }
     case 'TOGGLE_TBL_SELECTION':
@@ -266,20 +216,7 @@ const dbManager = (
             })),
             selectedTable: null,
             selectedField: null,
-            tables: state.tables.map(t => ({...t, isExpanded: false})),
-            editor: {
-              ...state.editor,
-              table: {
-                tbEditMode: false,
-                tbEditTitle: false,
-                tbTitle: null,
-                tbSummary: null,
-                tbRecordCount: null,
-                tbTitleChanged: false,
-                tbSummaryChanged: false,
-                tbRecordCountChanged: false,
-              }
-            }
+            tables: state.tables.map(t => ({...t, isExpanded: false}))
           }
         } else {
           return {
@@ -288,9 +225,9 @@ const dbManager = (
               ...d,
               tables: d.tables.map(t => {
                 if(t._id === action.table._id){
-                  return {...t, isExpanded: true}
+                  return {...t, isExpanded: true};
                 } else {
-                  return {...t, isExpanded: false}
+                  return {...t, isExpanded: false};
                 }
               })
             })),
@@ -302,20 +239,7 @@ const dbManager = (
               } else {
                 return {...t, isExpanded: false};
               }
-            }),
-            editor: {
-              ...state.editor,
-              table:{
-                tbEditMode: false,
-                tbEditTitle: false,
-                tbTitle: action.table.title,
-                tbSummary: action.table.summary,
-                tbRecordCount: action.table.recordCount,
-                tbTitleChanged: false,
-                tbSummaryChanged: false,
-                tbRecordCountChanged: false,
-              }
-            }
+            })
           }
         }
       } else {
@@ -325,9 +249,9 @@ const dbManager = (
             ...d,
             tables: d.tables.map(t => {
               if(t._id === action.table._id){
-                return {...t, isExpanded: true}
+                return {...t, isExpanded: true};
               } else {
-                return {...t, isExpanded: false}
+                return {...t, isExpanded: false};
               }
             })
           })),
@@ -339,21 +263,13 @@ const dbManager = (
             } else {
               return {...t, isExpanded: false};
             }
-          }),
-          editor: {
-            ...state.editor,
-            table:{
-              tbEditMode: false,
-              tbEditTitle: false,
-              tbTitle: action.table.title,
-              tbSummary: action.table.summary,
-              tbRecordCount: action.table.recordCount,
-              tbTitleChanged: false,
-              tbSummaryChanged: false,
-              tbRecordCountChanged: false,
-            }
-          }
+          })
         }
+      }
+    case 'SELECT_FIELD':
+      return {
+        ...state,
+        selectedField: action.field
       }
     case 'HAS_LIST':
       return {
@@ -403,6 +319,27 @@ const dbManager = (
   }
 };
 
+const userManager = (state = {}, action) => {
+  switch(action.type){
+    case 'AUTHENTICATED_USER':
+      return {
+        ...state,
+        authUser: action.user,
+        userId: action.user.uid,
+        username: '',
+        password: ''
+      }
+    case 'LOGOUT_USER':
+      return {
+        ...state,
+        authUser: null,
+        userId: null
+      }
+    default:
+      return state;
+  }
+};
+
 const formManager = (state = {}, action) => {
   switch(action.type){
     case 'ADD_INPUT_CHANGE':
@@ -419,20 +356,6 @@ const formManager = (state = {}, action) => {
       return {
         ...state,
         error: action.error
-      }
-    case 'AUTHENTICATED_USER':
-      return {
-        ...state,
-        authUser: action.user,
-        userId: action.user.uid,
-        username: '',
-        password: ''
-      }
-    case 'LOGOUT_USER':
-      return {
-        ...state,
-        authUser: null,
-        userId: null
       }
     default:
       return state;
@@ -460,11 +383,15 @@ const modalManager = (state = {
 const databaseApp = combineReducers({
   dbManager,
   formManager,
-  modalManager
+  modalManager,
+  userManager
 });
 
 ReactDOM.render(
-  <Provider store={createStore(databaseApp)}>
+  <Provider store={createStore(
+    databaseApp,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    )}>
     <App />
   </Provider>,
   document.getElementById('root')

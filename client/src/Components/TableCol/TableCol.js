@@ -43,7 +43,7 @@ const mapDispatchToTBColumnProps = (dispatch) => {
   }
 };
 
-const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleModal, dbIsExpanded }) => {
+const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleModal }) => {
 
   const removeTable = (id) => {
     API.removeTable(userId,id)
@@ -58,18 +58,15 @@ const TableList = ({ tables, userId, selectedDB, updateError, dbAction, toggleMo
   };
 
   return (
-    <div className={`col-4 table-col ${dbIsExpanded ? 'reveal-tables' : 'hide-tables'}`}>
-      {(tables && dbIsExpanded) && tables.map(table => (
-        <TableRecord table={table} key={`${selectedDB._id}-${table._id}`}
-          toggleModal={toggleModal}
-          removeTable={removeTable} removeField={removeField}/>
+    <div className={`col-4 table-col`}>
+      {tables && tables.map(table => (
+        <TableRecord table={table} key={table._id} toggleModal={toggleModal} 
+        removeTable={removeTable} removeField={removeField}/>
       ))
       }
-      {dbIsExpanded &&
-        <Button color="primary" className="w-100" onClick={() => toggleModal('showTableModal')}>
-          <FontAwesomeIcon className="btn-add text-white" icon="plus-circle" size="2x" />
-        </Button>
-      }
+      <Button color="primary" className="w-100" onClick={() => toggleModal('showTableModal')}>
+        <FontAwesomeIcon className="btn-add text-white" icon="plus-circle" size="2x" />
+      </Button>
     </div>
   )
 }

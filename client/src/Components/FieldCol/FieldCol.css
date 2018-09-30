@@ -37,14 +37,11 @@
 }
 
 .field-col {
-  z-index: 1;
-}
-
-.reveal-field {
   position: absolute;
   left: -25%;
   top: 100px;
   animation: field_slide_right 500ms ease forwards;
+  z-index: 1;
 }
 
 @keyframes field_slide_right {

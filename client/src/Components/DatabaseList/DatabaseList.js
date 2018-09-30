@@ -6,19 +6,29 @@ import TableCol from '../TableCol';
 import FieldCol from '../FieldCol';
 import './DatabaseList.css';
 
-const DatabaseList = connect()(({ databases, addTable,
-  addField, removeDB, removeTable, removeField }) => (
+const mapStateToDBListProps = (state) => {
+  return {
+    selectedField: state.dbManager.selectedField
+  }
+}
+
+const DatabaseList = connect(
+  mapStateToDBListProps
+)(({ databases, selectedField, addTable, addField, removeTable, removeField }) => (
   <div className="col">
     {databases && databases.map(db => (
       <div key={db._id} className={`row ${db.isExpanded ? 'selected' : ''}`}>
+        {/* Database Column */}
         <div className="col-4 db-col">
           <DatabaseRecord db={db} />
         </div>
-        <TableCol tables={db.tables}
-          dbIsExpanded={db.isExpanded}
-          addTable={addTable} addField={addField}
-          removeTable={removeTable} removeField={removeField} />
-        <FieldCol dbIsExpanded={db.isExpanded} />
+        {/* Table Column */}
+        {db.isExpanded && <TableCol tables={db.tables}
+            addTable={addTable} addField={addField}
+            removeTable={removeTable} removeField={removeField} />
+        }
+        {/* Field Column */}
+        {(db.isExpanded && selectedField) && <FieldCol field={selectedField} />}
       </div>
     ))}
   </div>

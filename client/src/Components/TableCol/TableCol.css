@@ -1,7 +1,10 @@
-.reveal-tables {
+.table-col {
   position: relative;
   left: -25%;
   animation: tables_slide_right 500ms ease forwards;
+  overflow: visible;
+  height: 1px;
+  z-index: 2;
 }
 
 @keyframes tables_slide_right {

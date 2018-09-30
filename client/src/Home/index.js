@@ -18,7 +18,6 @@ class Home extends Component {
     this.addDatabase = this.addDatabase.bind(this);
     this.addTable = this.addTable.bind(this);
     this.addField = this.addField.bind(this);
-    this.removeDB = this.removeDB.bind(this);
   };
 
   componentDidMount() {
@@ -55,47 +54,7 @@ class Home extends Component {
   componentWillUnmount() {
     this.unsubscribe();
   }
-
-  refreshDBList() {
-    const { store } = this.context;
-    const state = store.getState();
-
-    API.getDatabases(state.formManager.userId)
-      .then(resp => store.dispatch({
-        type: 'REFRESH_DB_LIST',
-        databases: resp.data
-      }))
-      .catch(err => store.dispatch({
-        type: 'RECORD_ERROR',
-        error: err
-      }));
-  };
-
-  refreshSelectedDB(){
-    const { store } = this.context;
-    const state = store.getState();
-
-    if(state.dbManager.selectedDB) {
-      API.getDatabase(state.formManager.userId, state.dbManager.selectedDB._id)
-        .then(resp => this.setState({
-          selectedDB: resp.data[0],
-          tables: resp.data[0].tables
-        }))
-        .catch(err => this.setState({ error: err }));
-    }
-  };
-
-  refreshSelectedTable(){
-    const { store } = this.context;
-    const state = store.getState();
-
-    if(state.dbManager.selectedTable) {
-      API.getTable(state.formManager.userId, state.dbManager.selectedTable._id)
-        .then(resp => this.setState({ selectedTable: resp.data }))
-        .catch(err => this.setState({ error: err }));
-    }
-  };
-
+  
   updateError(error){
     const { store } = this.context;
     store.dispatch({
@@ -153,13 +112,6 @@ class Home extends Component {
       .catch(err => this.updateError(err));
   };
 
-  // Delete API
-  removeDB(userId, id){
-    API.removeDB(userId,id)
-      .then(() => this.refreshDBList())
-      .catch(err => this.updateError(err));
-  };
-
   handleInputChange(event){
     const { store } = this.context;
     const { value, name } = event.target;
@@ -207,10 +159,14 @@ class Home extends Component {
     console.log(state);
 
     const { databases, selectedDB, selectedTable, error } = state.dbManager;
+
     const { showDBModal, showTableModal, showFieldModal, showProjectModal } = state.modalManager;
-    const { authUser, userId, dbTitle, dbSummary, dbType, tbTitle, tbSummary, tbRecordCount,
+    
+    const { dbTitle, dbSummary, dbType, tbTitle, tbSummary, tbRecordCount,
     fdTitle, fdSummary, fdDataType, fdDataLength, fdAllowNull, fdKey, fdDefaultValue,
     prjTitle, prjSummary, prjWebsite } = state.formManager;
+
+    const { authUser, userId } = state.userManager;
 
     // Filter the list of databases
     let dbList;

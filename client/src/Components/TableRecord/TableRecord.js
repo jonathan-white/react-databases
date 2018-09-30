@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+
 import { Badge, Card, CardText, CardHeader, CardBody, CardFooter,
   Collapse, ListGroup, ListGroupItem, Button } from 'reactstrap';
 
@@ -7,7 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import API from '../../utils/API';
 import "./TableRecord.css";
 
-class TableRecord extends Component {
+const mapStateToTBProps = (state) => {
+  return {
+    userId: state.userManager.userId,
+  }
+};
+
+class TableEntry extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -21,91 +28,84 @@ class TableRecord extends Component {
       tbRecordCount: this.props.table.recordCount || 0,
 
       // Change status
-      tbTitleChanged: false,
-      tbSummaryChanged: false,
-      tbRecordCountChanged: false,
+      hasChangedTitle: false,
+      hasChangedSummary: false,
+      hasChangedRecordCount: false,
     };
 
+    this.toggleTbSelection = this.toggleTbSelection.bind(this);
+    this.toggleState = this.toggleState.bind(this);
+    this.updateState = this.updateState.bind(this);
+    this.updateError = this.updateError.bind(this);
+    this.submitChanges = this.submitChanges.bind(this);
+    this.selectField = this.selectField.bind(this);
   };
 
-  componentDidMount = () => {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() =>
-      this.forceUpdate()
-    );
-  }
-
-  componentWillUnmount = () => {
-    this.unsubscribe();
-  }
-
-  toggleTbSelection = (table) => {
-    const { store } = this.context;
-    store.dispatch({
+  toggleTbSelection(table){
+    this.props.dispatch({
       type: 'TOGGLE_TBL_SELECTION',
       table: table
     })
   };
 
-  toggleTbEditState = (name) => {
-    this.setState((prevState) => ({
-      [name]: !prevState[name]
-    }))
+  toggleState = (name) => {
+    this.setState((prevState) => ({ [name]: !prevState[name] }))
   };
 
-  setTbEditState = (name, value) => {
+  updateState = (name, value) => {
     this.setState({ [name]: value});
   };
 
-  handleInputChange = (e) => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  };
-
   updateError(error){
-    const { store } = this.context;
-    store.dispatch({
+    this.props.dispatch({
       type: 'RECORD_ERROR',
       error: error
     })
   };
 
-  submitFormData = () => {
-    const { store } = this.context;
-    const state = store.getState();
-    
-    this.setTbEditState('editTitle',false);
-    this.setTbEditState('editRecordCount',false);
+  submitChanges() {
+    this.updateState('editTitle',false);
+    this.updateState('editRecordCount',false);
 
-    let tableData = { userId: state.formManager.userId};
-    if(this.state.tbTitleChanged) {
-      tableData = {...tableData, title: this.state.tbTitle};
+    let tbData = {};
+    if(this.state.hasChangedTitle) {
+      tbData = {...tbData, title: this.state.tbTitle};
     }
-    if(this.state.tbSummaryChanged) {
-      tableData = {...tableData, summary: this.state.tbSummary};
+    if(this.state.hasChangedSummary) {
+      tbData = {...tbData, summary: this.state.tbSummary};
     }
-    if(this.state.tbRecordCountChanged) {
-      tableData = {...tableData, recordCount: this.state.tbRecordCount};
+    if(this.state.hasChangedRecordCount) {
+      tbData = {...tbData, recordCount: this.state.tbRecordCount};
     }
 
     // If something has changed, send updated key value pairs to server
-    if(Object.keys(tableData).length > 1 && tableData.constructor === Object){
-      API.updateTable(this.props.table._id, tableData)
-        .then(resp => 
-          API.getDatabases(tableData.userId)
-          .then(resp => store.dispatch({
-            type: 'UPDATE_TABLES',
-            databases: resp.data
-          }))
-          .catch(err => this.updateError(err))
-        )
+    if(Object.keys(tbData).length !== 0 && tbData.constructor === Object){
+      API.updateTable(this.props.table._id, {...tbData, userId: this.props.userId})
+        .then(resp => {
+          console.log('Response:',resp.data);
+          API.getDatabases(this.props.userId)
+          .then(resp => {
+            this.props.dispatch({
+              type: 'UPDATE_TABLES',
+              databases: resp.data
+            });
+          })
+          .catch(err => this.updateError(err));
+
+        })
         .catch(err => this.updateError(err));
     }
+  };
+
+  selectField(field){
+    this.props.dispatch({
+      type: 'SELECT_FIELD',
+      field: field
+    })
   };
   
 
   render(){
-    const { store } = this.context;
 
     const { table, toggleModal, removeTable, removeField } = this.props;
     const { editMode, editTitle, editRecordCount, tbTitle, tbSummary, tbRecordCount } = this.state;
@@ -120,32 +120,32 @@ class TableRecord extends Component {
                 ? (<div>
                   {editTitle 
                     ? (<input type="text" name="tbTitle" value={tbTitle} 
-                    autoComplete="off" onBlur={() => this.toggleTbEditState('editTitle')}
+                    autoComplete="off" onBlur={() => this.toggleState('editTitle')}
                     onChange={(e) => {
-                      this.handleInputChange(e);
-                      this.setTbEditState('tbTitleChanged', true);
+                      this.updateState(e.target.name, e.target.value);
+                      this.updateState('hasChangedTitle', true);
                     }}
                     />)
-                    : (<div onClick={() => this.toggleTbEditState('editTitle')}>
+                    : (<div onClick={() => this.toggleState('editTitle')}>
                     {tbTitle}
                     </div>)
                   }
                 </div>)
-                : (table.title)
+                : (tbTitle)
               }
             </span>
             <span>
               <Badge className="recordsCount" color="info">
                 {editRecordCount
-                  ? (<input type="number" className="badge-input" name="tbRecordCount" value={tbRecordCount} 
-                    onBlur={() => this.toggleTbEditState('editRecordCount')}
+                  ? (<input type="number" className="badge-input" name="tbRecordCount" 
+                    value={tbRecordCount} onBlur={() => this.toggleState('editRecordCount')}
                     onChange={(e) => {
-                      this.handleInputChange(e);
-                      this.setTbEditState('tbRecordCountChanged', true);
+                      this.updateState(e.target.name, e.target.value);
+                      this.updateState('hasChangedRecordCount', true);
                     }}
                   />)
-                  : (<div onClick={() => this.toggleTbEditState('editRecordCount')}>
-                  Records: {table.recordCount}
+                  : (<div onClick={() => this.toggleState('editRecordCount')}>
+                  Records: {tbRecordCount}
                   </div>)
                 }
               </Badge>
@@ -160,11 +160,11 @@ class TableRecord extends Component {
           <span>
             {editMode 
               ? (<span className="btn-edit mr-3 btn-success" onClick={() => {
-                this.toggleTbEditState('editMode');
-                this.submitFormData();
+                this.toggleState('editMode');
+                this.submitChanges();
               }}>Save</span>)
               : (<span className="btn-edit mr-3" onClick={() => 
-                this.toggleTbEditState('editMode')
+                this.toggleState('editMode')
               }>Edit</span>)  
             }
           </span>
@@ -174,10 +174,10 @@ class TableRecord extends Component {
             <CardText>
               {editMode 
                 ? (<textarea className="summary" rows="3" name="tbSummary"
-                value={tbSummary} onChange={(e) => {
-                  this.handleInputChange(e);
-                  this.setTbEditState('tbSummaryChanged', true);
-                }} placeholder="Summary..." />)
+                value={tbSummary} placeholder="Summary..." onChange={(e) => {
+                  this.updateState(e.target.name, e.target.value);
+                  this.updateState('hasChangedSummary', true);
+                }} />)
                 : (tbSummary)
               }
             </CardText>
@@ -185,10 +185,7 @@ class TableRecord extends Component {
             <ListGroup>
               {table.fields && table.fields.map(field => (
                 <ListGroupItem key={field._id} className="field-item"
-                  onClick={() => store.dispatch({
-                    type: 'SELECT_FIELD',
-                    field: field
-                  })}
+                  onClick={() => this.selectField(field)}
                 >
                   <span>{field.title}</span>
                   <FontAwesomeIcon className="remove-field"
@@ -210,8 +207,7 @@ class TableRecord extends Component {
     )
   }
 };
-TableRecord.contextTypes = {
-  store: PropTypes.object
-};
+
+const TableRecord = connect(mapStateToTBProps)(TableEntry);
 
 export default TableRecord;

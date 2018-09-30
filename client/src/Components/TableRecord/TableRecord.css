@@ -26,11 +26,6 @@
     overflow-y: auto;
   }
   
-  .table-col {
-    overflow: visible;
-    height: 1px;
-  }
-  
   .table-item .header-content {
     display: flex;
     justify-content: space-between;
@@ -60,10 +55,6 @@
   
   .table-item .badge-input {
     width: 50px;
-  }
-  
-  .table-col {
-    z-index: 2;
   }
   
   .reveal-tables {

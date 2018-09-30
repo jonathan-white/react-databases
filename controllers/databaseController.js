@@ -54,17 +54,25 @@ module.exports = {
       .findOneAndUpdate(
         {userId: req.body.userId, _id: req.params.id},
         { $pull: { "projects": req.body.projectId } })
-      .populate({ path: 'tables', populate: { path: 'fields' }})
-      .populate('projects')
-      .then(dbModel => res.json(dbModel))
+      .then(dbModel => 
+        db.Database.find({userId: req.body.userId, _id: dbModel.id})
+          .populate({ path: 'tables', populate: { path: 'fields' }})
+          .populate('projects')
+          .then(updatedDB => res.json(updatedDB))
+          .catch(err => res.status(422).json(err))
+      )
       .catch(err => res.status(422).json(err));
   },
-  update: async function(req, res) {
+  update: function(req, res) {
     db.Database
       .findOneAndUpdate({ userId: req.body.userId, _id: req.params.id }, req.body)
-      .populate({ path: 'tables', populate: { path: 'fields' }})
-      .populate('projects')
-      .then(dbModel => res.json(dbModel))
+      .then(dbModel => 
+        db.Database.find({userId: req.body.userId, _id: dbModel._id})
+          .populate({ path: 'tables', populate: { path: 'fields' }})
+          .populate('projects')
+          .then(updatedDB => res.json(updatedDB))
+          .catch(err => res.status(422).json(err))
+      )
       .catch(err => res.status(422).json(err));
   },
   remove: function(req, res) {
