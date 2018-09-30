@@ -17,53 +17,7 @@ const dbManager = (
     tables: null,
     selectedDB: null,
     selectedTable: null,
-    selectedField: null,
-
-    editor: {
-      // Database Editor
-      database: {
-        dbEditMode: false,
-        dbEditTitle: false,
-        dbTitle: null,
-        dbSummary: null,
-        dbType: null,
-        dbTitleChanged: false,
-        dbSummaryChanged: false,
-        dbTypeChanged: false,
-      },
-
-      // Table Editor
-      table: {
-        tbEditMode: false,
-        tbEditTitle: false,
-        tbTitle: null,
-        tbSummary: null,
-        tbRecordCount: null,
-        tbTitleChanged: false,
-        tbSummaryChanged: false,
-        tbRecordCountChanged: false,
-      },
-
-      // Field Editor
-      field: {
-        fdEditMode: false,
-        fdEditTitle: false,
-        fdTitle: null,
-        fdSummary: null,
-        fdDataType: 'varchar',
-        fdDataLength: null,
-        fdNulls: false,
-        fdKey: null,
-        fdDefaultValue: null,
-        fdTitleChanged: false,
-        fdSummaryChanged: false,
-        fdDataTypeChanged: false,
-        fdDataLengthChanged: false,
-        fdNullsChanged: false,
-        fdKeyChanged: false,
-        fdDefaultValueChanged: false,
-      }
-    }
+    selectedField: null
   }, action
 ) => {
   switch(action.type) {
@@ -74,7 +28,8 @@ const dbManager = (
         tables: null,
         selectedDB: null,
         selectedTable: null,
-        selectedField: null
+        selectedField: null,
+        error: null
       }
     case 'REMOVE_DB_FROM_LIST':
       return {
@@ -89,7 +44,8 @@ const dbManager = (
         tables: null,
         selectedDB: null,
         selectedTable: null,
-        selectedField: null
+        selectedField: null,
+        error: null
       }
     case 'UPDATE_DATABASES':
       return {
@@ -104,7 +60,8 @@ const dbManager = (
           } else {
             return {...d, isExpanded: false };
           }
-        })
+        }),
+        error: null
       }
     case 'UPDATE_TABLES':
       return {
@@ -129,7 +86,8 @@ const dbManager = (
           } else {
             return { ...d, isExpanded: false };
           }
-        })
+        }),
+        error: null
       }
     case 'UPDATE_FIELDS':
       return {
@@ -153,13 +111,15 @@ const dbManager = (
               isExpanded: false
             }
           }
-        })
+        }),
+        error: null
       }
     case 'UPDATE_SELECTED_DB':
       return {
         ...state,
         selectedDB: action.database,
-        tables: action.database.tables
+        tables: action.database.tables,
+        error: null
       }
     case 'TOGGLE_DB_SELECTION':
       if(state.selectedDB) {
@@ -170,7 +130,8 @@ const dbManager = (
             selectedDB: null,
             selectedTable: null,
             selectedField: null,
-            tables: null
+            tables: null,
+            error: null
           }
         } else {
           return {
@@ -185,7 +146,8 @@ const dbManager = (
             selectedDB: {...action.database, isExpanded: true},
             selectedTable: null,
             selectedField: null,
-            tables: action.database.tables.map(t => ({...t, isExpanded: false}))            
+            tables: action.database.tables.map(t => ({...t, isExpanded: false})),
+            error: null        
           }
         }
 
@@ -202,7 +164,8 @@ const dbManager = (
           selectedDB: {...action.database, isExpanded: true},
           selectedTable: null,
           selectedField: null,
-          tables: action.database.tables
+          tables: action.database.tables,
+          error: null
         }
       }
     case 'TOGGLE_TBL_SELECTION':
@@ -216,7 +179,8 @@ const dbManager = (
             })),
             selectedTable: null,
             selectedField: null,
-            tables: state.tables.map(t => ({...t, isExpanded: false}))
+            tables: state.tables.map(t => ({...t, isExpanded: false})),
+            error: null
           }
         } else {
           return {
@@ -239,7 +203,8 @@ const dbManager = (
               } else {
                 return {...t, isExpanded: false};
               }
-            })
+            }),
+            error: null
           }
         }
       } else {
@@ -263,13 +228,15 @@ const dbManager = (
             } else {
               return {...t, isExpanded: false};
             }
-          })
+          }),
+          error: null
         }
       }
     case 'SELECT_FIELD':
       return {
         ...state,
-        selectedField: action.field
+        selectedField: action.field,
+        error: null
       }
     case 'HAS_LIST':
       return {

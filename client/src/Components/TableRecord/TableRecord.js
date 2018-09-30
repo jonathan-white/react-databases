@@ -69,7 +69,6 @@ class TableEntry extends React.Component {
       hasChangedRecordCount: false,
     };
 
-    // this.toggleTbSelection = this.toggleTbSelection.bind(this);
     this.toggleState = this.toggleState.bind(this);
     this.updateState = this.updateState.bind(this);
     this.submitChanges = this.submitChanges.bind(this);
@@ -85,7 +84,7 @@ class TableEntry extends React.Component {
     this.setState({ [name]: value});
   };
 
-  submitChanges() {
+  submitChanges = () => {
     this.updateState('editTitle',false);
     this.updateState('editRecordCount',false);
 
@@ -108,13 +107,13 @@ class TableEntry extends React.Component {
     }
   };
 
-  removeTable(id){
+  removeTable = (id) => {
     API.removeTable(this.props.userId, id)
       .then(() => this.props.dbAction(this.props.userId, 'UPDATE_TABLES'))
       .catch(err => this.props.updateError(err));
   }
 
-  removeField(id){
+  removeField = (id) => {
     API.removeField(this.props.userId, id)
       .then(() => {
         if(id === this.props.selectedField){

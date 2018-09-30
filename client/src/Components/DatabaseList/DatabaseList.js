@@ -10,11 +10,11 @@ const mapStateToDBListProps = (state) => {
   return {
     selectedField: state.dbManager.selectedField
   }
-}
+};
 
 const DatabaseList = connect(
   mapStateToDBListProps
-)(({ databases, selectedField, addTable, addField, removeTable, removeField }) => (
+)(({ databases, selectedField }) => (
   <div className="col">
     {databases && databases.map(db => (
       <div key={db._id} className={`row ${db.isExpanded ? 'selected' : ''}`}>
@@ -23,10 +23,7 @@ const DatabaseList = connect(
           <DatabaseRecord db={db} />
         </div>
         {/* Table Column */}
-        {db.isExpanded && <TableCol tables={db.tables}
-            addTable={addTable} addField={addField}
-            removeTable={removeTable} removeField={removeField} />
-        }
+        {db.isExpanded && <TableCol tables={db.tables} />}
         {/* Field Column */}
         {(db.isExpanded && selectedField) && <FieldCol field={selectedField} />}
       </div>

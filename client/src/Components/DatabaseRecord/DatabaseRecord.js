@@ -29,6 +29,12 @@ const mapDispatchToDBProps = (dispatch) => {
         name: modalName
       })
     },
+    updateError: (error) => {
+      dispatch({
+        type: 'RECORD_ERROR',
+        error: error
+      })
+    },
     dbAction: (userId, actionType) => {
       API.getDatabases(userId)
         .then(resp => dispatch({
@@ -71,46 +77,16 @@ class DatabaseEntry extends React.Component {
     this.setState((prevState) => ({ [name]: !prevState[name] }));
   };
 
-  removeProjectFromDB(dbId, prjId){
-    API.removeDBProject(dbId, {projectId: prjId})
-        .then(resp => {
-          console.log('Project removed');
-
-          // this.setState({ db: resp.data });
-          this.props.dispatch({
-            type: 'UPDATE_DATABASES',
-            database: resp.data
-          })
-        })
-        .catch(err => this.props.dispatch({
-          type: 'RECORD_ERROR',
-          error: err
-        }));
+  removeProjectFromDB(prjId){
+    API.removeDBProject(this.props.db._id, {userId: this.props.userId, projectId: prjId})
+        .then(() => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
+        .catch(err => this.props.updateError(err));
   };
 
   removeDB(id){
     API.removeDB(this.props.userId, id)
-        .then(() => {
-          console.log(`Database ${id} removed`);
-          this.props.dbAction(this.props.userId, 'UPDATE_DATABASES');
-          // dispatch({
-          //   type: 'REMOVE_DB_FROM_LIST',
-          //   databaseId: id
-          // });
-          // API.getDatabases(userId)
-          //   .then(resp => dispatch({
-          //     type: 'REFRESH_DB_LIST',
-          //     databases: resp.data
-          //   }))
-          //   .catch(err => dispatch({
-          //     type: 'RECORD_ERROR',
-          //     error: err
-          //   }));
-        })
-        .catch(err => this.props.dispatch({
-          type: 'RECORD_ERROR',
-          error: err
-        }));
+      .then(() => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
+      .catch(err => this.props.updateError(err));
   }
 
   submitChanges(){
@@ -132,11 +108,8 @@ class DatabaseEntry extends React.Component {
       // If something has changed, send updated key value pairs to server
       if(Object.keys(dbData).length !== 0 && dbData.constructor === Object){
         API.updateDB(this.props.db._id, {...dbData, userId: this.props.userId})
-          .then(resp => console.log('Response:',resp.data))
-          .catch(err => this.props.dispatch({
-            type: 'RECORD_ERROR',
-            error: err
-          }));
+          .then(resp => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
+          .catch(err => this.props.updateError(err));
       }
     }
   }
@@ -209,11 +182,12 @@ class DatabaseEntry extends React.Component {
                       <CardText>{project.summary}</CardText>
                       <CardFooter>
                         {project.website &&
-                          <a className="" href={project.website} target="_blank" rel="noopener noreferrer">View Site</a>
+                          <a className="" href={project.website} target="_blank" 
+                            rel="noopener noreferrer">View Site</a>
                         }
                       </CardFooter>
                     </CardBody>
-                    <span onClick={() => this.removeProjectFromDB(db._id, project._id)}>
+                    <span onClick={() => this.removeProjectFromDB(project._id)}>
                       <FontAwesomeIcon className="remove-project"
                       icon="window-close"/>
                     </span>
