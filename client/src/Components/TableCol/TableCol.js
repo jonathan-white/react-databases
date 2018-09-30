@@ -11,7 +11,7 @@ import './TableCol.css';
 const mapStateToTBColumnProps = (state) => {
   return {
     selectedDB: state.dbManager.selectedDB,
-    userId: state.formManager.userId,
+    userId: state.userManager.userId,
   }
 };
 

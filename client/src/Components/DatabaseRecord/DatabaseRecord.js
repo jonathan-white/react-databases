@@ -15,15 +15,34 @@ const mapStateToDBProps = (state) => {
   }
 };
 
+const mapDispatchToDBProps = (dispatch) => {
+  return {
+    toggleDbSelection: (database) => {
+      dispatch({
+        type: 'TOGGLE_DB_SELECTION',
+        database: database
+      })
+    },
+    toggleModal: (modalName) => {
+      dispatch({
+        type: 'TOGGLE_MODAL',
+        name: modalName
+      })
+    }
+  }
+};
+
 class DatabaseEntry extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       editMode: false,
       editTitle: false,
+
       dbTitle: this.props.db.title,
       dbSummary: this.props.db.summary,
       dbType: this.props.db.type,
+
       hasChangedTitle: false,
       hasChangedSummary: false,
       hasChangedType: false,
@@ -31,8 +50,6 @@ class DatabaseEntry extends React.Component {
 
     this.updateState = this.updateState.bind(this);
     this.toggleState = this.toggleState.bind(this);
-    this.toggleDbSelection = this.toggleDbSelection.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
     this.removeProjectFromDB = this.removeProjectFromDB.bind(this);
     this.removeDB = this.removeDB.bind(this);
     this.submitChanges = this.submitChanges.bind(this);
@@ -44,20 +61,6 @@ class DatabaseEntry extends React.Component {
 
   toggleState(name){
     this.setState((prevState) => ({ [name]: !prevState[name] }));
-  }
-
-  toggleDbSelection(database){
-    this.props.dispatch({
-      type: 'TOGGLE_DB_SELECTION',
-      database: database
-    })
-  };
-
-  toggleModal(modalName){
-    this.props.dispatch({
-      type: 'TOGGLE_MODAL',
-      name: modalName
-    })
   };
 
   removeProjectFromDB(dbId, prjId){
@@ -163,7 +166,7 @@ class DatabaseEntry extends React.Component {
             }
           </div>
           <div className={`${!editMode ? 'clickable-overlay' : ''}`}
-            onClick={() => this.toggleDbSelection(db)}></div>
+            onClick={() => this.props.toggleDbSelection(db)}></div>
           {editMode
             ? (<span className="btn-edit mr-3 btn-success" onClick={() => {
               this.submitChanges();
@@ -207,7 +210,7 @@ class DatabaseEntry extends React.Component {
                     </span>
                   </Card>
                 ))}
-                <Button color="primary" className="w-100" onClick={() => this.toggleModal('showProjectModal')}>
+                <Button color="primary" className="w-100" onClick={() => this.props.toggleModal('showProjectModal')}>
                   <FontAwesomeIcon className="btn-add text-white" size="2x"
                   icon="plus-circle" />
                 </Button>
@@ -218,7 +221,7 @@ class DatabaseEntry extends React.Component {
                   <CardText className="text-center">
                     <FontAwesomeIcon className="btn-add text-success"
                       icon="plus-circle" size="2x"
-                      onClick={() => this.toggleModal('showProjectModal')}
+                      onClick={() => this.props.toggleModal('showProjectModal')}
                     />
                   </CardText>
                 </CardBody>
@@ -257,6 +260,9 @@ class DatabaseEntry extends React.Component {
   }
 };
 
-const DatabaseRecord = connect(mapStateToDBProps)(DatabaseEntry);
+const DatabaseRecord = connect(
+  mapStateToDBProps, 
+  mapDispatchToDBProps
+)(DatabaseEntry);
 
 export default DatabaseRecord;

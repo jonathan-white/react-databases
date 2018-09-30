@@ -1,5 +1,6 @@
 
 .field-item {
+  position: relative;
   display: flex !important;
   justify-content: space-between;
 }
@@ -20,7 +21,7 @@
 }
 .field-item .remove-field {
   color: #ccc;
-  z-index: 1;
+  z-index: 3;
 }
 .field-item .remove-field:hover {
   color: #dc3545;

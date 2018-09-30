@@ -11,6 +11,44 @@ import "./TableRecord.css";
 const mapStateToTBProps = (state) => {
   return {
     userId: state.userManager.userId,
+    selectedField: state.dbManager.selectedField
+  }
+};
+
+const mapDispatchToTBProps = (dispatch) => {
+  return {
+    toggleTbSelection: (table) => {
+      dispatch({
+        type: 'TOGGLE_TBL_SELECTION',
+        table: table
+      })
+    },
+    toggleModal: (modalName) => {
+      dispatch({
+        type: 'TOGGLE_MODAL',
+        name: modalName
+      })
+    },
+    updateError: (error) => {
+      dispatch({
+        type: 'RECORD_ERROR',
+        error: error
+      })
+    },
+    dbAction: (userId, actionType) => {
+      API.getDatabases(userId)
+        .then(resp => dispatch({
+          type: actionType,
+          databases: resp.data
+        }))
+        .catch(err => this.updateError(err))
+    },
+    selectField: (field) => {
+      dispatch({
+        type: 'SELECT_FIELD',
+        field: field
+      })
+    }
   }
 };
 
@@ -22,30 +60,21 @@ class TableEntry extends React.Component {
       editTitle: false,
       editRecordCount: false,
 
-      // Table state
       tbTitle: this.props.table.title || '',
       tbSummary: this.props.table.summary || '',
       tbRecordCount: this.props.table.recordCount || 0,
 
-      // Change status
       hasChangedTitle: false,
       hasChangedSummary: false,
       hasChangedRecordCount: false,
     };
 
-    this.toggleTbSelection = this.toggleTbSelection.bind(this);
+    // this.toggleTbSelection = this.toggleTbSelection.bind(this);
     this.toggleState = this.toggleState.bind(this);
     this.updateState = this.updateState.bind(this);
-    this.updateError = this.updateError.bind(this);
     this.submitChanges = this.submitChanges.bind(this);
-    this.selectField = this.selectField.bind(this);
-  };
-
-  toggleTbSelection(table){
-    this.props.dispatch({
-      type: 'TOGGLE_TBL_SELECTION',
-      table: table
-    })
+    this.removeTable = this.removeTable.bind(this);
+    this.removeField = this.removeField.bind(this);
   };
 
   toggleState = (name) => {
@@ -54,13 +83,6 @@ class TableEntry extends React.Component {
 
   updateState = (name, value) => {
     this.setState({ [name]: value});
-  };
-
-  updateError(error){
-    this.props.dispatch({
-      type: 'RECORD_ERROR',
-      error: error
-    })
   };
 
   submitChanges() {
@@ -81,33 +103,33 @@ class TableEntry extends React.Component {
     // If something has changed, send updated key value pairs to server
     if(Object.keys(tbData).length !== 0 && tbData.constructor === Object){
       API.updateTable(this.props.table._id, {...tbData, userId: this.props.userId})
-        .then(resp => {
-          console.log('Response:',resp.data);
-          API.getDatabases(this.props.userId)
-          .then(resp => {
-            this.props.dispatch({
-              type: 'UPDATE_TABLES',
-              databases: resp.data
-            });
-          })
-          .catch(err => this.updateError(err));
-
-        })
-        .catch(err => this.updateError(err));
+        .then(() => this.props.dbAction(this.props.userId, 'UPDATE_TABLES'))
+        .catch(err => this.props.updateError(err));
     }
   };
 
-  selectField(field){
-    this.props.dispatch({
-      type: 'SELECT_FIELD',
-      field: field
-    })
+  removeTable(id){
+    API.removeTable(this.props.userId, id)
+      .then(() => this.props.dbAction(this.props.userId, 'UPDATE_TABLES'))
+      .catch(err => this.props.updateError(err));
+  }
+
+  removeField(id){
+    API.removeField(this.props.userId, id)
+      .then(() => {
+        if(id === this.props.selectedField){
+          this.props.selectField(null);
+        }
+        this.props.dbAction(this.props.userId, 'UPDATE_FIELDS');
+      })
+      .catch(err => this.props.updateError(err));
   };
   
 
   render(){
 
-    const { table, toggleModal, removeTable, removeField } = this.props;
+    const { table } = this.props;
+    
     const { editMode, editTitle, editRecordCount, tbTitle, tbSummary, tbRecordCount } = this.state;
 
     return(
@@ -156,7 +178,7 @@ class TableEntry extends React.Component {
             </span>
           </div>
           <div className={`${!editMode ? 'clickable-overlay' : ''}`}
-            onClick={() => this.toggleTbSelection(table)}></div>
+            onClick={() => this.props.toggleTbSelection(table)}></div>
           <span>
             {editMode 
               ? (<span className="btn-edit mr-3 btn-success" onClick={() => {
@@ -184,23 +206,23 @@ class TableEntry extends React.Component {
             {tbSummary && <hr />}
             <ListGroup>
               {table.fields && table.fields.map(field => (
-                <ListGroupItem key={field._id} className="field-item"
-                  onClick={() => this.selectField(field)}
-                >
+                <ListGroupItem key={field._id} className="field-item">
                   <span>{field.title}</span>
+                  <div className="clickable-overlay" onClick={() => this.props.selectField(field)}></div>
                   <FontAwesomeIcon className="remove-field"
                     icon="window-close" size="2x" onClick={() =>
-                      removeField(field._id)
+                      this.removeField(field._id)
                     }/>
                 </ListGroupItem>
               ))}
             </ListGroup>
           </CardBody>
           <CardFooter>
-            <Button color="primary" style={{width: '40%'}} className="mr-2"
-              onClick={() => toggleModal('showFieldModal')}>Add Field</Button>{' '}
-            <Button color="danger" style={{width: '50%'}}
-              onClick={() => removeTable(table._id)}>Delete Table</Button>
+            <Button color="primary" className="btn-add-field mr-2"
+              onClick={() => this.props.toggleModal('showFieldModal')}>Add Field</Button>
+            {' '}
+            <Button color="danger" className="btn-delete-table"
+              onClick={() => this.removeTable(table._id)}>Delete Table</Button>
           </CardFooter>
         </Collapse>
       </Card>
@@ -208,6 +230,9 @@ class TableEntry extends React.Component {
   }
 };
 
-const TableRecord = connect(mapStateToTBProps)(TableEntry);
+const TableRecord = connect(
+  mapStateToTBProps,
+  mapDispatchToTBProps
+)(TableEntry);
 
 export default TableRecord;
