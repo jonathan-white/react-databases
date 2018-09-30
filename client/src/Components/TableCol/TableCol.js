@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import TableRecord from './TableRecord';
-import API from '../../../utils/API';
-import './Table.css';
+import TableRecord from '../TableRecord';
+import API from '../../utils/API';
+import './TableCol.css';
 
 const mapStateToTBColumnProps = (state) => {
   return {

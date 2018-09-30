@@ -4,7 +4,8 @@ import { Badge, Card, CardText, CardHeader, CardBody, CardFooter,
   Collapse, ListGroup, ListGroupItem, Button } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import API from '../../../utils/API';
+import API from '../../utils/API';
+import "./TableRecord.css";
 
 class TableRecord extends Component {
   constructor(props){
@@ -176,7 +177,7 @@ class TableRecord extends Component {
                 value={tbSummary} onChange={(e) => {
                   this.handleInputChange(e);
                   this.setTbEditState('tbSummaryChanged', true);
-                }} />)
+                }} placeholder="Summary..." />)
                 : (tbSummary)
               }
             </CardText>

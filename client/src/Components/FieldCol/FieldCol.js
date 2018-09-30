@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Card, CardHeader, CardText, CardBody, Badge, Alert } from 'reactstrap';
 import moment from 'moment';
 
-import './Field.css';
+import './FieldCol.css';
 
 class FieldCol extends Component {
   constructor(props){

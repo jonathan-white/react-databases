@@ -1,0 +1,10 @@
+.reveal-tables {
+  position: relative;
+  left: -25%;
+  animation: tables_slide_right 500ms ease forwards;
+}
+
+@keyframes tables_slide_right {
+  0% { left: -25%; }
+  100% { left: 0; }
+}

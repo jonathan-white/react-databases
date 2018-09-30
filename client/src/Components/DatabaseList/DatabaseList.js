@@ -1,17 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import DatabaseCol from './DatabaseCol';
-import TableCol from './Table';
-import FieldCol from './Field';
-import './Database.css';
+import DatabaseRecord from '../DatabaseRecord';
+import TableCol from '../TableCol';
+import FieldCol from '../FieldCol';
+import './DatabaseList.css';
 
 const DatabaseList = connect()(({ databases, addTable,
   addField, removeDB, removeTable, removeField }) => (
   <div className="col">
     {databases && databases.map(db => (
       <div key={db._id} className={`row ${db.isExpanded ? 'selected' : ''}`}>
-        <DatabaseCol db={db} />
+        <div className="col-4 db-col">
+          <DatabaseRecord db={db} />
+        </div>
         <TableCol tables={db.tables}
           dbIsExpanded={db.isExpanded}
           addTable={addTable} addField={addField}

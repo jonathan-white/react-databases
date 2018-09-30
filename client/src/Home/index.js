@@ -5,7 +5,7 @@ import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter,
   Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 import logo from '../images/gear.svg';
-import DatabaseList from '../Components/Database';
+import DatabaseList from '../Components/DatabaseList';
 import LoginForm from '../Components/Login';
 import LogoutButton from '../Components/Logout';
 import API from '../utils/API';
@@ -318,7 +318,7 @@ class Home extends Component {
           </div>
         )}
         
-        {/* New Database */}
+        {/* New Database Modal Form */}
         <Modal isOpen={showDBModal} toggle={() => this.toggleModal('showDBModal')}>
           <Form>
             <ModalHeader toggle={() => this.toggleModal('showDBModal')}>
