@@ -28,6 +28,14 @@ const mapDispatchToDBProps = (dispatch) => {
         type: 'TOGGLE_MODAL',
         name: modalName
       })
+    },
+    dbAction: (userId, actionType) => {
+      API.getDatabases(userId)
+        .then(resp => dispatch({
+          type: actionType,
+          databases: resp.data
+        }))
+        .catch(err => this.updateError(err))
     }
   }
 };
@@ -80,10 +88,11 @@ class DatabaseEntry extends React.Component {
         }));
   };
 
-  removeDB(userId, id){
-    API.this.removeDB(userId, id)
+  removeDB(id){
+    API.removeDB(this.props.userId, id)
         .then(() => {
           console.log(`Database ${id} removed`);
+          this.props.dbAction(this.props.userId, 'UPDATE_DATABASES');
           // dispatch({
           //   type: 'REMOVE_DB_FROM_LIST',
           //   databaseId: id
@@ -133,7 +142,7 @@ class DatabaseEntry extends React.Component {
   }
 
   render() {
-    const { db, userId } = this.props;
+    const { db } = this.props;
 
     const { editMode, editTitle, dbTitle, dbSummary, dbType } = this.state;
 
@@ -242,7 +251,7 @@ class DatabaseEntry extends React.Component {
                 : (<span className="item-type">{dbType}</span>)
               }
               {editMode &&
-                <Button color="danger" onClick={() => this.removeDB(userId, db._id)}>
+                <Button color="danger" onClick={() => this.removeDB(db._id)}>
                   Delete
                 </Button>
               }
