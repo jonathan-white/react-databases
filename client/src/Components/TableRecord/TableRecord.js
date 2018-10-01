@@ -47,7 +47,7 @@ const mapDispatchToTBProps = (dispatch) => {
       dispatch({
         type: 'SELECT_FIELD',
         field: field
-      })
+      });
     }
   }
 };

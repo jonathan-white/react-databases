@@ -53,3 +53,14 @@
   0% { left: -25%; top: 100px; }
   100% { left: 0; top: 0; }
 }
+
+.field-entry .key-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #aaa;
+}
+
+.key-indicator .primary {
+  color: rgb(202, 154, 21);
+}

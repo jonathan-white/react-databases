@@ -1,15 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Card, CardHeader, CardText, CardBody, Badge, Alert, Input, Label } from 'reactstrap';
+import { Card, CardHeader, CardText, CardBody, Badge, Alert, 
+  Input, Label, FormGroup } from 'reactstrap';
 import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import API from '../../utils/API';
 import './FieldCol.css';
 
 const mapStateToFieldProps = (state) => {
   return {
-    userId: state.userManager.userId
+    userId: state.userManager.userId,
+    selectedField: state.dbManager.selectedField
   }
 }
 
@@ -40,13 +43,13 @@ class FieldEntry extends React.Component {
       editTitle: false,
       editDataType: false,
       
-      fdTitle: this.props.field.title,
-      fdSummary: this.props.field.summary,
-      fdDataType: this.props.field.dataType,
-      fdDataLength: this.props.field.dataLength,
-      fdAllowNull: this.props.field.allowNull,
-      fdKey: this.props.field.key,
-      fdDefaultValue: this.props.field.defaultValue,
+      fdTitle: this.props.selectedField.title,
+      fdSummary: this.props.selectedField.summary,
+      fdDataType: this.props.selectedField.dataType,
+      fdDataLength: this.props.selectedField.dataLength,
+      fdAllowNull: this.props.selectedField.allowNull,
+      fdKey: this.props.selectedField.key,
+      fdDefaultValue: this.props.selectedField.defaultValue,
 
       hasChangedTitle: false,
       hasChangedSummary: false,
@@ -64,7 +67,11 @@ class FieldEntry extends React.Component {
   };
 
   updateState = (name, value) => {
-    this.setState({ [name]: value});
+    if(name.constructor === Object){
+      this.setState(name);
+    } else {
+      this.setState({ [name]: value});
+    }
   };
 
   submitChanges = () => {
@@ -97,14 +104,14 @@ class FieldEntry extends React.Component {
   };
 
   render() {
-    const { field } = this.props;
+    const { selectedField } = this.props;
 
     const { editMode, editTitle, editDataType, fdTitle, fdSummary, fdDataType,
       fdDataLength, fdAllowNull, fdKey, fdDefaultValue } = this.state;
 
     return(
       <div className={`col-4 field-col`}>
-        {field && (
+        {selectedField && (
           <Card className="mb-2 field-entry">
             <CardHeader className="d-flex justify-content-between">
               <span className="record-title">
@@ -119,11 +126,11 @@ class FieldEntry extends React.Component {
                       }}
                       />)
                       : (<div onClick={() => this.toggleState('editTitle')}>
-                      {fdTitle}
+                      {selectedField.title}
                       </div>)
                     }
                   </div>)
-                  : (fdTitle)
+                  : (selectedField.title)
                 }
               </span>
               <span>
@@ -132,9 +139,18 @@ class FieldEntry extends React.Component {
                     this.toggleState('editMode');
                     this.submitChanges();
                   }}>Save</span>)
-                  : (<span className="btn-edit mr-3" onClick={() => 
-                    this.toggleState('editMode')
-                  }>Edit</span>)
+                  : (<span className="btn-edit mr-3" onClick={() => {
+                    this.toggleState('editMode');
+                    this.updateState({
+                      fdTitle: selectedField.title,
+                      fdSummary: selectedField.summary,
+                      fdDataType: selectedField.dataType,
+                      fdDataLength: selectedField.dataLength,
+                      fdAllowNull: selectedField.allowNull,
+                      fdKey: selectedField.key,
+                      fdDefaultValue: selectedField.defaultValue
+                    });
+                  }}>Edit</span>)
                 }
                 <Badge color="danger">
                   {editDataType
@@ -155,12 +171,12 @@ class FieldEntry extends React.Component {
                       <option>varchar</option>
                     </Input>)
                     : (
-                      field.dataLength 
+                      selectedField.dataLength 
                         ? (<span onClick={() => this.toggleState('editDataType')}>
-                          {fdDataType} ({fdDataLength})
+                          {selectedField.dataType} ({selectedField.dataLength})
                         </span>)
                         : (<span onClick={() => this.toggleState('editDataType')}>
-                        {fdDataType} 
+                        {selectedField.dataType} 
                         </span>)
                     )
                   }
@@ -191,25 +207,33 @@ class FieldEntry extends React.Component {
                         this.updateState(e.target.name, e.target.value);
                         this.updateState('hasChangedKey', true);
                     }}/>
-                    <Label check for="fdAllowNull">
-                      <Input type="checkbox" name="fdAllowNull" id="fdAllowNull"
-                        onClick={(e) => {
-                          this.updateState(e.target.name, e.target.value);
-                          this.updateState('hasChangedAllowNull', true);
-                        }} />
-                      Allow Nulls
-                    </Label>
+                    <FormGroup>
+                      <Label check for="fdAllowNull">
+                        <Input type="checkbox" name="fdAllowNull" id="fdAllowNull"
+                          onClick={(e) => {
+                            this.updateState(e.target.name, e.target.value);
+                            this.updateState('hasChangedAllowNull', true);
+                          }} />
+                        Allow Nulls
+                      </Label>
+                    </FormGroup>
                   </CardText>
                 )
-                : (<CardText>{fdSummary}</CardText>)
+                : (<div>
+                  <div><CardText>{selectedField.summary}</CardText></div>
+                  <div><CardText>Default Value: {fdDefaultValue ? fdDefaultValue : ''}</CardText></div>
+                  </div>)
               }
               {fdSummary && <hr />}
-              {field.allowNull
+              {selectedField.allowNull
                 ? <Alert color="success" className="text-center">Nulls Allowed</Alert>
                 : <Alert color="danger"  className="text-center">No Null Values</Alert>
               }
+              <span className="key-indicator">
+                {fdKey ? <FontAwesomeIcon icon="key" className={`${fdKey}`} /> : ''}
+              </span>
               <span className="dateAdded">
-                Added: {moment(field.dateAdded).format('MMMM DD YYYY')}
+                Added: {moment(selectedField.dateAdded).format('MMMM DD YYYY')}
               </span>
             </CardBody>
           </Card>
