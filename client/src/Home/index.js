@@ -159,35 +159,30 @@ const mapDispatchToHomeProps = (dispatch) => {
         name: modalName
       });
     },
-    addProjectToDB(event, userId, dbId, projData){
+    addProjectToDB(event, dbId, projData){
       event.preventDefault();
  
       API.addProject(projData)
-        .then(resp => {
-          console.log('addProject response:',resp);
+        .then(resp => 
           // Link new project to the database
-          API.addDBProject(dbId, { userId: userId, projectId: resp.data._id })
-            .then((dbResp) => {
-              console.log('addDBProject response:',dbResp);
-              API.getDatabases(userId)
-                .then(dbs => {
-                  console.log('getDatabases response:',dbs);
-                  dispatch({
+          API.addDBProject(dbId, { userId: projData.userId, projectId: resp.data._id })
+            .then(() => 
+              API.getDatabases(projData.userId)
+                .then(dbs => dispatch({
                     type: 'UPDATE_DATABASES',
                     databases: dbs.data
-                  });
-                })
+                  })
+                )
                 .catch(err => dispatch({
                   type: 'RECORD_ERROR',
                   error: err
-                }));
-            }
+                }))
             )
             .catch(err => dispatch({
               type: 'RECORD_ERROR',
               error: err
-            }));
-        })
+            }))
+        )
         .catch(err => dispatch({
           type: 'RECORD_ERROR',
           error: err
@@ -207,10 +202,7 @@ class HomeDisplay extends React.Component {
   componentDidMount(){
     auth.hasAuthStateChanged((user) => {
       if(user){
-        console.log('user is signed in.');
         this.props.loadUserData(user);
-      } else {
-        console.log('No user is signed in.');
       }
     })
   }

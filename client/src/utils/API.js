@@ -13,7 +13,7 @@ export default {
     return axios.post('/api/databases/add-database', dbData);
   },
   removeDB: (userId, dbId) => {
-    return axios.delete(`/api/databases/${dbId}`, { userId });
+    return axios.delete(`/api/databases/${dbId}`, { data: { userId } });
   },
   updateDB: (dbId, updatedData) => {
     return axios.put(`/api/databases/${dbId}`, updatedData);
@@ -22,7 +22,7 @@ export default {
     return axios.post(`/api/databases/${dbId}/add-project`, projData);
   },
   removeDBProject: (dbId, projData) => {
-    return axios.delete(`/api/databases/${dbId}/remove-project`, projData)
+    return axios.delete(`/api/databases/${dbId}/remove-project`, { data: projData })
   },
 
   // Table API
@@ -34,7 +34,7 @@ export default {
     return axios.post(`/api/tables/${id}`, { userId });
   },
   removeTable: (userId, tableId) => {
-    return axios.delete(`/api/tables/${tableId}`, { userId });
+    return axios.delete(`/api/tables/${tableId}`, { data: { userId } });
   },
   updateTable: (tableId, updatedData) => {
     return axios.put(`/api/tables/${tableId}`, updatedData);
@@ -46,7 +46,7 @@ export default {
     return axios.post('/api/fields/add-field', fieldData);
   },
   removeField: (userId, fieldId) => {
-    return axios.delete(`/api/fields/${fieldId}`, { userId });
+    return axios.delete(`/api/fields/${fieldId}`, { data: { userId } });
   },
   updateField: (fieldId, updatedData) => {
     return axios.put(`/api/fields/${fieldId}`, updatedData);

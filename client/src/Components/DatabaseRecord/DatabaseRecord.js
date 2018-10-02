@@ -85,8 +85,8 @@ class DatabaseEntry extends React.Component {
 
   removeProjectFromDB(prjId){
     API.removeDBProject(this.props.db._id, {userId: this.props.userId, projectId: prjId})
-        .then(() => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
-        .catch(err => this.props.updateError(err));
+      .then(() => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
+      .catch(err => this.props.updateError(err));
   };
 
   removeDB(id){
