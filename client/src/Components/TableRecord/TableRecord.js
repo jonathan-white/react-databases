@@ -25,9 +25,12 @@ const mapDispatchToTBProps = (dispatch) => {
     },
     toggleModal: (modalName) => {
       dispatch({
+        type: 'CLEAR_ALL_FORMS'
+      });
+      dispatch({
         type: 'TOGGLE_MODAL',
         name: modalName
-      })
+      });
     },
     updateError: (error) => {
       dispatch({

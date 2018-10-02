@@ -11,9 +11,12 @@ const mapDispatchToTBColumnProps = (dispatch) => {
   return {
     toggleModal: (modalName) => {
       dispatch({
+        type: 'CLEAR_ALL_FORMS'
+      });
+      dispatch({
         type: 'TOGGLE_MODAL',
         name: modalName
-      })
+      });
     }
   }
 };

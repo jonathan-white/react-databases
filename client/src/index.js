@@ -338,6 +338,8 @@ const formManager = (state = {}, action) => {
         ...state,
         [action.name]: action.value
       }
+    case 'CLEAR_ALL_FORMS':
+      return {}
     case 'SEARCH_QUERY':
       return {
         ...state,

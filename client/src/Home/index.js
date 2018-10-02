@@ -112,9 +112,8 @@ class Home extends Component {
       .catch(err => this.updateError(err));
   };
 
-  handleInputChange(event){
+  handleInputChange(name, value){
     const { store } = this.context;
-    const { value, name } = event.target;
 
     store.dispatch({
       type: 'ADD_INPUT_CHANGE',
@@ -125,6 +124,9 @@ class Home extends Component {
 
   toggleModal(modalName) {
     const { store } = this.context;
+    store.dispatch({
+      type: 'CLEAR_ALL_FORMS'
+    });
     store.dispatch({
       type: 'TOGGLE_MODAL',
       name: modalName
@@ -156,7 +158,6 @@ class Home extends Component {
   render() {
     const { store } = this.context;
     const state = store.getState();
-    console.log(state);
 
     const { databases, selectedDB, selectedTable, error } = state.dbManager;
 
@@ -286,21 +287,21 @@ class Home extends Component {
                   Database Name <span className="required">*</span>
                 </Label>
                 <Input type="text" name="dbTitle" id="dbTitle" autoFocus
-                  onChange={(e) => this.handleInputChange(e)} />
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
               </FormGroup>
               <FormGroup>
                 <Label for="dbSummary">
                   Description <span className="required">*</span>
                 </Label>
                 <Input type="textarea" name="dbSummary" id="dbSummary"
-                  onChange={(e) => this.handleInputChange(e)}/>
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}/>
               </FormGroup>
               <FormGroup>
                 <Label for="dbType">
                   Type <span className="required">*</span>
                 </Label>
                 <Input type="select" name="dbType" id="dbType"
-                  onChange={(e) => this.handleInputChange(e)}>
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}>
                   <option>MySQL</option>
                   <option>MongoDB</option>
                 </Input>
@@ -334,17 +335,17 @@ class Home extends Component {
                   Table Name <span className="required">*</span>
                 </Label>
                 <Input type="text" name="tbTitle" id="tbTitle" autoFocus
-                  onChange={(e) => this.handleInputChange(e)} />
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
               </FormGroup>
               <FormGroup>
                 <Label for="tbSummary">Description</Label>
                 <Input type="textarea" name="tbSummary" id="tbSummary"
-                  onChange={(e) => this.handleInputChange(e)}/>
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}/>
               </FormGroup>
               <FormGroup>
                 <Label for="tbRecordsCount">Number of Records</Label>
                 <Input type="number" name="tbRecordCount" id="tbRecordCount"
-                  onChange={(e) => this.handleInputChange(e)} />
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
               </FormGroup>
             </ModalBody>
             <ModalFooter>
@@ -375,12 +376,12 @@ class Home extends Component {
                   Field Name <span className="required">*</span>
                 </Label>
                 <Input type="text" name="fdTitle" id="fdTitle"
-                  onChange={(e) => this.handleInputChange(e)}/>
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}/>
               </FormGroup>
               <FormGroup>
                 <Label for="fdSummary">Description</Label>
                 <Input type="textarea" name="fdSummary" id="fdSummary"
-                  onChange={(e) => this.handleInputChange(e)}/>
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}/>
               </FormGroup>
               <div className="d-flex">
                 <div className="mr-2">
@@ -388,7 +389,7 @@ class Home extends Component {
                     <Label for="fdDataType">Data Type</Label>
                     <Input type="select" name="fdDataType" id="fdDataType"
                       defaultValue="varchar"
-                      onChange={(e) => this.handleInputChange(e)}>
+                      onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}>
                       <option>boolean</option>
                       <option>datetime</option>
                       <option>decimal</option>
@@ -402,24 +403,24 @@ class Home extends Component {
                   <FormGroup>
                     <Label for="fdDataLength">Length</Label>
                     <Input type="number" name="fdDataLength" id="fdDataLength"
-                      onChange={(e) => this.handleInputChange(e)} />
+                      onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
                   </FormGroup>
                 </div>
                 <div className="ml-2">
                   <FormGroup>
                     <Label for="fdDefaultValue">Default Value</Label>
                     <Input type="text" name="fdDefaultValue" id="fdDefaultValue"
-                      onChange={(e) => this.handleInputChange(e)} />
+                      onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
                   </FormGroup>
                   <FormGroup>
                     <Label for="fdKey">Key</Label>
                     <Input type="text" name="fdKey" id="fdKey"
-                      onChange={(e) => this.handleInputChange(e)} />
+                      onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
                   </FormGroup>
                   <FormGroup check>
                     <Label check for="fdAllowNull">
                       <Input type="checkbox" name="fdAllowNull" id="fdAllowNull"
-                        onClick={() => this.toggleAllowNulls()} />
+                        onChange={(e) => this.handleInputChange(e.target.name, e.target.checked)} />
                       Allow Nulls
                     </Label>
                   </FormGroup>
@@ -454,21 +455,21 @@ class Home extends Component {
                   Project Name <span className="required">*</span>
                 </Label>
                 <Input type="text" name="prjTitle" id="prjTitle"
-                  onChange={(e) => this.handleInputChange(e)} />
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
               </FormGroup>
               <FormGroup>
                 <Label for="prjSummary">
                   Description <span className="required">*</span>
                 </Label>
                 <Input type="textarea" name="prjSummary" id="prjSummary"
-                  onChange={(e) => this.handleInputChange(e)}/>
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}/>
               </FormGroup>
               <FormGroup>
                 <Label for="prjWebsite">
                   Website
                 </Label>
                 <Input type="url" name="prjWebsite" id="prjWebsite"
-                  onChange={(e) => this.handleInputChange(e)} />
+                  onChange={(e) => this.handleInputChange(e.target.name, e.target.value)} />
               </FormGroup>
             </ModalBody>
             <ModalFooter>

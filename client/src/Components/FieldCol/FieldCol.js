@@ -147,7 +147,7 @@ class FieldEntry extends React.Component {
                         }}
                         />)
                         : (<div onClick={() => this.toggleState('editTitle')}>
-                        {title}
+                        {fdTitle}
                         </div>)
                       }
                     </div>)
