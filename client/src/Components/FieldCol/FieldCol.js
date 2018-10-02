@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Card, CardHeader, CardText, CardBody, Badge, Alert, 
-  Input, Label, FormGroup } from 'reactstrap';
+  Input, Label, Form, FormGroup } from 'reactstrap';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -24,13 +24,17 @@ const mapDispatchToFieldProps = (dispatch) => {
         error: error
       })
     },
-    dbAction: (userId, actionType) => {
+    dbAction: (userId, field, actionType) => {
       API.getDatabases(userId)
         .then(resp => dispatch({
           type: actionType,
-          databases: resp.data
+          databases: resp.data,
+          updatedField: field
         }))
-        .catch(err => this.updateError(err))
+        .catch(err => dispatch({
+          type: 'RECORD_ERROR',
+          error: err
+        }))
     },
   }
 };
@@ -75,15 +79,18 @@ class FieldEntry extends React.Component {
   };
 
   submitChanges = () => {
-    this.updateState('editTitle',false);
-    this.updateState('editDataType',false);
-
     let fdData = {};
     if(this.state.hasChangedTitle) {
       fdData = {...fdData, title: this.state.fdTitle};
     }
     if(this.state.hasChangedSummary) {
       fdData = {...fdData, summary: this.state.fdSummary};
+    }
+    if(this.state.hasChangedDataType) {
+      fdData = {...fdData, dataType: this.state.fdDataType};
+    }
+    if(this.state.hasChangedDataLength) {
+      fdData = {...fdData, dataLength: this.state.fdDataLength};
     }
     if(this.state.hasChangedAllowNull) {
       fdData = {...fdData, allowNull: this.state.fdAllowNull};
@@ -95,16 +102,29 @@ class FieldEntry extends React.Component {
       fdData = {...fdData, defaultValue: this.state.fdfdDefaultValue};
     }
 
+    // Reset change states
+    this.setState({
+      hasChangedTitle: false,
+      hasChangedSummary: false,
+      hasChangedDataType: false,
+      hasChangedDataLength: false,
+      hasChangedAllowNull: false,
+      hasChangedKey: false,
+      hasChangedDefaultValue: false,
+    })
+
     // If something has changed, send updated key value pairs to server
     if(Object.keys(fdData).length !== 0 && fdData.constructor === Object){
       API.updateField(this.props.field._id, {...fdData, userId: this.props.userId})
-        .then(() => this.props.dbAction(this.props.userId, 'UPDATE_FIELDS'))
+        .then((resp) => this.props.dbAction(this.props.userId, resp.data[0], 'UPDATE_SINGLE_FIELD'))
         .catch(err => this.props.updateError(err));
     }
   };
 
   render() {
     const { selectedField } = this.props;
+    const { title, summary, dataType, dataLength, allowNull, key, defaultValue,
+      dateAdded } = selectedField;
 
     const { editMode, editTitle, editDataType, fdTitle, fdSummary, fdDataType,
       fdDataLength, fdAllowNull, fdKey, fdDefaultValue } = this.state;
@@ -113,81 +133,90 @@ class FieldEntry extends React.Component {
       <div className={`col-4 field-col`}>
         {selectedField && (
           <Card className="mb-2 field-entry">
-            <CardHeader className="d-flex justify-content-between">
-              <span className="record-title">
-                {editMode
-                  ? (<div>
-                    {editTitle 
-                      ? (<input type="text" name="fdTitle" value={fdTitle} 
-                      autoComplete="off" onBlur={() => this.toggleState('editTitle')}
-                      onChange={(e) => {
-                        this.updateState(e.target.name, e.target.value);
-                        this.updateState('hasChangedTitle', true);
-                      }}
-                      />)
-                      : (<div onClick={() => this.toggleState('editTitle')}>
-                      {selectedField.title}
-                      </div>)
+            <CardHeader>
+              <div className="header-content">
+                <span className="record-title">
+                  {editMode
+                    ? (<div>
+                      {editTitle 
+                        ? (<input type="text" name="fdTitle" value={fdTitle} 
+                        autoComplete="off" onBlur={() => this.toggleState('editTitle')}
+                        className="input-title" onChange={(e) => {
+                          this.updateState(e.target.name, e.target.value);
+                          this.updateState('hasChangedTitle', true);
+                        }}
+                        />)
+                        : (<div onClick={() => this.toggleState('editTitle')}>
+                        {title}
+                        </div>)
+                      }
+                    </div>)
+                    : (title)
+                  }
+                </span>
+                <span>
+                  <Badge color="danger">
+                    {editDataType
+                      ? (<Input type="select" className="badge-input" name="fdDataType" 
+                        value={fdDataType} onBlur={() => this.toggleState('editDataType')}
+                        bsSize="sm" onChange={(e) => {
+                          this.updateState(e.target.name, e.target.value);
+                          this.updateState('hasChangedDataType', true);
+                        }}
+                      >
+                        <option>boolean</option>
+                        <option>datetime</option>
+                        <option>decimal</option>
+                        <option>double</option>
+                        <option>int</option>
+                        <option>text</option>
+                        <option>tinyint</option>
+                        <option>varchar</option>
+                      </Input>)
+                      : (dataLength 
+                          ? (<span onClick={() => this.toggleState('editDataType')}>
+                            {dataType} ({dataLength})
+                          </span>)
+                          : (<span onClick={() => this.toggleState('editDataType')}>
+                          {dataType} 
+                          </span>)
+                      )
                     }
-                  </div>)
-                  : (selectedField.title)
-                }
-              </span>
+                  </Badge>
+                </span>
+              </div>
+              <div className={`${!editMode ? 'clickable-overlay' : ''}`}></div>
               <span>
                 {editMode 
                   ? (<span className="btn-edit mr-3 btn-success" onClick={() => {
                     this.toggleState('editMode');
+                    this.updateState({
+                      editTitle: false,
+                      editDataType: false
+                    });
                     this.submitChanges();
                   }}>Save</span>)
                   : (<span className="btn-edit mr-3" onClick={() => {
                     this.toggleState('editMode');
                     this.updateState({
-                      fdTitle: selectedField.title,
-                      fdSummary: selectedField.summary,
-                      fdDataType: selectedField.dataType,
-                      fdDataLength: selectedField.dataLength,
-                      fdAllowNull: selectedField.allowNull,
-                      fdKey: selectedField.key,
-                      fdDefaultValue: selectedField.defaultValue
+                      fdTitle: title,
+                      fdSummary: summary,
+                      fdDataType: dataType,
+                      fdDataLength: dataLength,
+                      fdAllowNull: allowNull,
+                      fdKey: key,
+                      fdDefaultValue: defaultValue,
+                      editTitle: false,
+                      editDataType: false
                     });
                   }}>Edit</span>)
                 }
-                <Badge color="danger">
-                  {editDataType
-                    ? (<Input type="select" className="badge-input" name="fdDataType" 
-                      value={fdDataType} onBlur={() => this.toggleState('editDataType')}
-                      onChange={(e) => {
-                        this.updateState(e.target.name, e.target.value);
-                        this.updateState('hasChangedDataType', true);
-                      }}
-                    >
-                      <option>boolean</option>
-                      <option>datetime</option>
-                      <option>decimal</option>
-                      <option>double</option>
-                      <option>int</option>
-                      <option>text</option>
-                      <option>tinyint</option>
-                      <option>varchar</option>
-                    </Input>)
-                    : (
-                      selectedField.dataLength 
-                        ? (<span onClick={() => this.toggleState('editDataType')}>
-                          {selectedField.dataType} ({selectedField.dataLength})
-                        </span>)
-                        : (<span onClick={() => this.toggleState('editDataType')}>
-                        {selectedField.dataType} 
-                        </span>)
-                    )
-                  }
-                </Badge>
               </span>
             </CardHeader>
             <CardBody>
               {editMode 
-                ? (
-                  <CardText>
-                    <textarea className="summary" rows="2" name="fdSummary"
+                ? (<Form className="edit-form">
+                    <Input type="textarea" className="summary" rows="2" name="fdSummary"
                     value={fdSummary} placeholder="Summary..." onChange={(e) => {
                       this.updateState(e.target.name, e.target.value);
                       this.updateState('hasChangedSummary', true);
@@ -208,32 +237,35 @@ class FieldEntry extends React.Component {
                         this.updateState('hasChangedKey', true);
                     }}/>
                     <FormGroup>
-                      <Label check for="fdAllowNull">
-                        <Input type="checkbox" name="fdAllowNull" id="fdAllowNull"
-                          onClick={(e) => {
-                            this.updateState(e.target.name, e.target.value);
+                      <Label check for="fdAllowNull" className="ckbAllowNull">
+                        <input type="checkbox" name="fdAllowNull" id="fdAllowNull"
+                          onChange={(e) => {
+                            this.updateState(e.target.name, e.target.checked);
                             this.updateState('hasChangedAllowNull', true);
                           }} />
                         Allow Nulls
                       </Label>
                     </FormGroup>
-                  </CardText>
-                )
+                  </Form>)
                 : (<div>
-                  <div><CardText>{selectedField.summary}</CardText></div>
-                  <div><CardText>Default Value: {fdDefaultValue ? fdDefaultValue : ''}</CardText></div>
+                  <div><CardText>{summary}</CardText></div>
+                    {summary && <hr />}
+                    <div>
+                      <CardText>
+                        <span className="field-header">Default Value:</span> {fdDefaultValue ? fdDefaultValue : ''}
+                      </CardText>
+                    </div>
                   </div>)
               }
-              {fdSummary && <hr />}
-              {selectedField.allowNull
+              {allowNull
                 ? <Alert color="success" className="text-center">Nulls Allowed</Alert>
                 : <Alert color="danger"  className="text-center">No Null Values</Alert>
               }
               <span className="key-indicator">
-                {fdKey ? <FontAwesomeIcon icon="key" className={`${fdKey}`} /> : ''}
+                {key ? <FontAwesomeIcon icon="key" className={`${key}`} title={`${key} key`} /> : ''}
               </span>
               <span className="dateAdded">
-                Added: {moment(selectedField.dateAdded).format('MMMM DD YYYY')}
+                Added: {moment(dateAdded).format('MMMM DD YYYY')}
               </span>
             </CardBody>
           </Card>

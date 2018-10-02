@@ -42,6 +42,8 @@
   left: -25%;
   top: 100px;
   animation: field_slide_right 500ms ease forwards;
+  overflow: visible;
+  height: 1px;
   z-index: 1;
 }
 
@@ -62,5 +64,42 @@
 }
 
 .key-indicator .primary {
-  color: rgb(202, 154, 21);
+  color: #ca9a15;
+}
+
+.key-indicator .foreign {
+  color: #b1aeae;
+}
+
+.field-entry .edit-form, 
+.field-entry .form-control,
+.field-entry .form-control:focus {
+  color: #26168b;
+}
+
+.field-entry .ckbAllowNull {
+  margin-left: 20px;
+}
+
+.field-entry .edit-form > * {
+  margin-bottom: 5px;
+}
+
+.field-entry .field-header {
+  font-weight: 600;
+}
+
+.field-entry .card-header {
+  position: relative;
+}
+
+.field-entry .header-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.field-entry .card-header .btn-edit {
+  position: absolute;
+  top: 10px;
+  right: 100px;
 }

@@ -7,6 +7,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import { STATES } from 'mongoose';
 // import expect from 'expect';
 // import deepFreeze from 'deep-freeze';
 
@@ -112,6 +113,29 @@ const dbManager = (
             }
           }
         }),
+        error: null
+      }
+    case 'UPDATE_SINGLE_FIELD':
+      return {
+        ...state,
+        databases: action.databases.map(d => {
+          if(d._id === state.selectedDB._id){
+            return {
+              ...d,
+              tables: d.tables.map(t => {
+                if(t._id === state.selectedTable._id){
+                  return {...t, isExpanded: true};
+                } else {
+                  return {...t, isExpanded: false};
+                }
+              }),
+              isExpanded: true
+            }
+          } else {
+            return { ...d, isExpanded: false }
+          }
+        }),
+        selectedField: action.updatedField,
         error: null
       }
     case 'UPDATE_SELECTED_DB':

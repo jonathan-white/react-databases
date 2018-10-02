@@ -31,10 +31,6 @@
   justify-content: space-between;
 }
 
-.table-item .record-title input {
-  width: 140px;
-}
-
 .table-item .recordsCount {
   margin-right: 5px;
 }

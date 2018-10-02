@@ -111,3 +111,7 @@ header {
   margin: 50px auto;
   text-align: center;
 }
+
+input.input-title {
+  width: 100px;
+}

@@ -130,7 +130,7 @@ class DatabaseEntry extends React.Component {
                   {editTitle
                     ? (<input type="text" name="dbTitle" value={dbTitle}
                       autoComplete="off" onBlur={() => this.toggleState('editTitle')}
-                      onChange={(e) => {
+                      className="input-title" onChange={(e) => {
                         this.updateState(e.target.name, e.target.value);
                         this.updateState('hasChangedTitle', true);
                       }} />)
