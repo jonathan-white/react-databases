@@ -25,7 +25,7 @@ const mapDispatchToDBProps = (dispatch) => {
     },
     toggleModal: (modalName) => {
       dispatch({
-        type: 'CLEAR_ALL_FORMS'
+        type: 'CLEAR_FORM_MANAGER'
       });
       dispatch({
         type: 'TOGGLE_MODAL',
@@ -44,7 +44,10 @@ const mapDispatchToDBProps = (dispatch) => {
           type: actionType,
           databases: resp.data
         }))
-        .catch(err => this.updateError(err))
+        .catch(err => dispatch({
+          type: 'RECORD_ERROR',
+          error: err
+        }))
     }
   }
 };

@@ -7,7 +7,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { STATES } from 'mongoose';
+
 // import expect from 'expect';
 // import deepFreeze from 'deep-freeze';
 
@@ -22,26 +22,10 @@ const dbManager = (
   }, action
 ) => {
   switch(action.type) {
-    case 'REFRESH_DB_LIST':
+    case 'LOAD_DB_LIST':
       return {
         ...state,
         databases: action.databases.map(d => ({...d, isExpanded: false})),
-        tables: null,
-        selectedDB: null,
-        selectedTable: null,
-        selectedField: null,
-        error: null
-      }
-    case 'REMOVE_DB_FROM_LIST':
-      return {
-        ...state,
-        databases: state.databases.filter(d => {
-          if(d._id !== action.databaseId){
-            return d;
-          } else {
-            return false;
-          }
-        }),
         tables: null,
         selectedDB: null,
         selectedTable: null,
@@ -136,13 +120,6 @@ const dbManager = (
           }
         }),
         selectedField: action.updatedField,
-        error: null
-      }
-    case 'UPDATE_SELECTED_DB':
-      return {
-        ...state,
-        selectedDB: action.database,
-        tables: action.database.tables,
         error: null
       }
     case 'TOGGLE_DB_SELECTION':
@@ -262,48 +239,10 @@ const dbManager = (
         selectedField: action.field,
         error: null
       }
-    case 'HAS_LIST':
-      return {
-        ...state,
-        hasList: true
-      }
     case 'RECORD_ERROR':
       return {
         ...state,
         error: action.error
-      }
-    case 'EDIT_INPUT_CHANGE':
-      return {
-        ...state,
-        editor: {
-          ...state.editor,
-          [action.tier]: {
-            ...state.editor[action.tier],
-            [action.name]: action.value
-          }
-        }
-      }
-    case 'TOGGLE_EDIT_STATE':
-      return {
-        ...state,
-        editor: {
-          ...state.editor,
-          [action.tier]: {
-            ...state.editor[action.tier],
-            [action.name]: !state.editor[action.tier][action.name]
-          }
-        }
-      }
-    case 'SET_EDIT_STATE':
-      return {
-        ...state,
-        editor: {
-          ...state.editor,
-          [action.tier]: {
-            ...state.editor[action.tier],
-            [action.name]: action.value
-          }
-        }
       }
     default:
       return state;
@@ -338,7 +277,7 @@ const formManager = (state = {}, action) => {
         ...state,
         [action.name]: action.value
       }
-    case 'CLEAR_ALL_FORMS':
+    case 'CLEAR_FORM_MANAGER':
       return {}
     case 'SEARCH_QUERY':
       return {

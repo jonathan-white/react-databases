@@ -25,7 +25,7 @@ const mapDispatchToTBProps = (dispatch) => {
     },
     toggleModal: (modalName) => {
       dispatch({
-        type: 'CLEAR_ALL_FORMS'
+        type: 'CLEAR_FORM_MANAGER'
       });
       dispatch({
         type: 'TOGGLE_MODAL',
@@ -44,7 +44,10 @@ const mapDispatchToTBProps = (dispatch) => {
           type: actionType,
           databases: resp.data
         }))
-        .catch(err => this.updateError(err))
+        .catch(err => dispatch({
+          type: 'RECORD_ERROR',
+          error: err
+        }))
     },
     selectField: (field) => {
       dispatch({
@@ -72,19 +75,19 @@ class TableEntry extends React.Component {
       hasChangedRecordCount: false,
     };
 
-    this.toggleState = this.toggleState.bind(this);
     this.updateState = this.updateState.bind(this);
+    this.toggleState = this.toggleState.bind(this);
     this.submitChanges = this.submitChanges.bind(this);
     this.removeTable = this.removeTable.bind(this);
     this.removeField = this.removeField.bind(this);
   };
 
-  toggleState = (name) => {
-    this.setState((prevState) => ({ [name]: !prevState[name] }))
-  };
-
   updateState = (name, value) => {
     this.setState({ [name]: value});
+  };
+
+  toggleState = (name) => {
+    this.setState((prevState) => ({ [name]: !prevState[name] }))
   };
 
   submitChanges = () => {

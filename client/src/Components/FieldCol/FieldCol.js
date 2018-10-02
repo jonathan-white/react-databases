@@ -64,10 +64,9 @@ class FieldEntry extends React.Component {
       hasChangedDefaultValue: false,
     };
 
-  };
-
-  toggleState = (name) => {
-    this.setState((prevState) => ({ [name]: !prevState[name] }))
+    this.updateState = this.updateState.bind(this);
+    this.toggleState = this.toggleState.bind(this);
+    this.submitChanges = this.submitChanges.bind(this);
   };
 
   updateState = (name, value) => {
@@ -76,6 +75,10 @@ class FieldEntry extends React.Component {
     } else {
       this.setState({ [name]: value});
     }
+  };
+
+  toggleState = (name) => {
+    this.setState((prevState) => ({ [name]: !prevState[name] }))
   };
 
   submitChanges = () => {
@@ -127,7 +130,7 @@ class FieldEntry extends React.Component {
       dateAdded } = selectedField;
 
     const { editMode, editTitle, editDataType, fdTitle, fdSummary, fdDataType,
-      fdDataLength, fdAllowNull, fdKey, fdDefaultValue } = this.state;
+      fdDataLength, fdKey, fdDefaultValue } = this.state;
 
     return(
       <div className={`col-4 field-col`}>
