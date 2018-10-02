@@ -1,0 +1,108 @@
+.App-logo {
+animation: App-logo-spin infinite 40s linear;
+height: 80px;
+}
+
+.App-title {
+	font-size: 1.5em;
+}
+
+.App-intro {
+	font-size: large;
+}
+
+@keyframes App-logo-spin {
+	from { transform: rotate(360deg); }
+	to { transform: rotate(0deg); }
+}
+
+.record-title {
+	font-weight: 600;
+	color: rgb(18, 34, 185);
+}
+
+.up-arrow {
+	position: relative;
+	top: 5px;
+}
+
+.btn-add {
+	cursor: pointer;
+}
+
+.btn-edit {
+	display: none;
+	background-color: #eee;
+	padding: 2px 10px;
+	border-radius: 5px;
+	z-index: 1;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.btn-edit:hover {
+	color: red;
+	cursor: pointer;
+}
+
+.expanded .btn-edit {
+	display: inline-block;
+}
+
+.dateAdded {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	color: #aaa;
+	font-style: italic;
+	font-size: .75rem;
+}
+
+.required {
+	color: red;
+	font-weight: 800;
+}
+
+.placeholder-project {
+	border: 1px solid #8d92c7;
+}
+
+.project {
+	position: relative;
+}
+
+.remove-project {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	color: red;
+	cursor: pointer;
+}
+
+.column-headers {
+	position: -webkit-sticky;
+	position: sticky;
+	padding: 5px 0;
+	top: 0;
+	background-color: #fff;
+	z-index: 4;
+}
+
+.search {
+	margin: 5px 0;
+}
+
+.error-message {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	width: 400px;
+	margin: 50px auto;
+	text-align: center;
+}
+
+input.input-title {
+	width: 100px;
+}

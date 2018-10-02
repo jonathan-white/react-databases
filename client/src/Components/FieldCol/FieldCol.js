@@ -24,18 +24,18 @@ const mapDispatchToFieldProps = (dispatch) => {
         error: error
       })
     },
-    dbAction: (userId, field, actionType) => {
-      API.getDatabases(userId)
-        .then(resp => dispatch({
-          type: actionType,
-          databases: resp.data,
-          updatedField: field
-        }))
-        .catch(err => dispatch({
-          type: 'RECORD_ERROR',
-          error: err
-        }))
-    },
+    dbAction: (userId, actionType, field) => {
+			API.getDatabases(userId)
+				.then(resp => dispatch({
+					type: actionType,
+					databases: resp.data,
+					delta: field
+				}))
+				.catch(err => dispatch({
+					type: 'RECORD_ERROR',
+					error: err
+				}))
+		},
   }
 };
 
@@ -119,7 +119,7 @@ class FieldEntry extends React.Component {
     // If something has changed, send updated key value pairs to server
     if(Object.keys(fdData).length !== 0 && fdData.constructor === Object){
       API.updateField(this.props.field._id, {...fdData, userId: this.props.userId})
-        .then((resp) => this.props.dbAction(this.props.userId, resp.data[0], 'UPDATE_SINGLE_FIELD'))
+        .then((resp) => this.props.dbAction(this.props.userId, 'UPDATE_SINGLE_FIELD', resp.data[0]))
         .catch(err => this.props.updateError(err));
     }
   };
