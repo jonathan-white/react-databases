@@ -255,7 +255,7 @@ class FieldEntry extends React.Component {
                     {summary && <hr />}
                     <div>
                       <CardText>
-                        <span className="field-header">Default Value:</span> {fdDefaultValue ? fdDefaultValue : ''}
+                        <span className="field-header">Default Value:</span> {defaultValue ? defaultValue : ''}
                       </CardText>
                     </div>
                   </div>)
