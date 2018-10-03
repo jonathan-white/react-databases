@@ -6,6 +6,7 @@ import { Card, CardHeader, CardText, CardBody, Badge, Alert,
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { default as actions } from '../../utils/actions';
 import API from '../../utils/API';
 import './FieldCol.css';
 
@@ -14,29 +15,10 @@ const mapStateToFieldProps = (state) => {
     userId: state.userManager.userId,
     selectedField: state.dbManager.selectedField
   }
-}
+};
 
 const mapDispatchToFieldProps = (dispatch) => {
-  return {
-    updateError: (error) => {
-      dispatch({
-        type: 'RECORD_ERROR',
-        error: error
-      })
-    },
-    dbAction: (userId, actionType, field) => {
-			API.getDatabases(userId)
-				.then(resp => dispatch({
-					type: actionType,
-					databases: resp.data,
-					delta: field
-				}))
-				.catch(err => dispatch({
-					type: 'RECORD_ERROR',
-					error: err
-				}))
-		},
-  }
+	return actions(dispatch);
 };
 
 class FieldEntry extends React.Component {

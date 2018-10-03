@@ -5,6 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
 	Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 	
 import { default as actions } from '../../utils/actions';
+import './ModalForms.css';
 	
 const mapStateToModalFormProps = (state) => {
 	return {

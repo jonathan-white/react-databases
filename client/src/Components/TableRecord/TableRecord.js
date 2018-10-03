@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 
 import { Badge, Card, CardText, CardHeader, CardBody, CardFooter,
   Collapse, ListGroup, ListGroupItem, Button } from 'reactstrap';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { default as actions } from '../../utils/actions';
 import API from '../../utils/API';
 import "./TableRecord.css";
 
@@ -16,46 +17,7 @@ const mapStateToTBProps = (state) => {
 };
 
 const mapDispatchToTBProps = (dispatch) => {
-  return {
-    toggleTbSelection: (table) => {
-      dispatch({
-        type: 'TOGGLE_TBL_SELECTION',
-        table: table
-      })
-    },
-    toggleModal: (modalName) => {
-      dispatch({
-        type: 'CLEAR_FORM_MANAGER'
-      });
-      dispatch({
-        type: 'TOGGLE_MODAL',
-        name: modalName
-      });
-    },
-    updateError: (error) => {
-      dispatch({
-        type: 'RECORD_ERROR',
-        error: error
-      })
-    },
-    dbAction: (userId, actionType) => {
-      API.getDatabases(userId)
-        .then(resp => dispatch({
-          type: actionType,
-          databases: resp.data
-        }))
-        .catch(err => dispatch({
-          type: 'RECORD_ERROR',
-          error: err
-        }))
-    },
-    selectField: (field) => {
-      dispatch({
-        type: 'SELECT_FIELD',
-        field: field
-      });
-    }
-  }
+	return actions(dispatch);
 };
 
 class TableEntry extends React.Component {
@@ -77,9 +39,9 @@ class TableEntry extends React.Component {
 
     this.updateState = this.updateState.bind(this);
     this.toggleState = this.toggleState.bind(this);
-    this.submitChanges = this.submitChanges.bind(this);
     this.removeTable = this.removeTable.bind(this);
     this.removeField = this.removeField.bind(this);
+    this.submitChanges = this.submitChanges.bind(this);
   };
 
   updateState = (name, value) => {
@@ -89,6 +51,23 @@ class TableEntry extends React.Component {
   toggleState = (name) => {
     this.setState((prevState) => ({ [name]: !prevState[name] }))
   };
+  
+    removeTable = (id) => {
+      API.removeTable(this.props.userId, id)
+        .then(() => this.props.dbAction(this.props.userId, 'UPDATE_TABLES'))
+        .catch(err => this.props.updateError(err));
+    }
+  
+    removeField = (id) => {
+      API.removeField(this.props.userId, id)
+        .then(() => {
+          if(id === this.props.selectedField){
+            this.props.selectField(null);
+          }
+          this.props.dbAction(this.props.userId, 'UPDATE_FIELDS');
+        })
+        .catch(err => this.props.updateError(err));
+    };
 
   submitChanges = () => {
     this.updateState('editTitle',false);
@@ -111,23 +90,6 @@ class TableEntry extends React.Component {
         .then(() => this.props.dbAction(this.props.userId, 'UPDATE_TABLES'))
         .catch(err => this.props.updateError(err));
     }
-  };
-
-  removeTable = (id) => {
-    API.removeTable(this.props.userId, id)
-      .then(() => this.props.dbAction(this.props.userId, 'UPDATE_TABLES'))
-      .catch(err => this.props.updateError(err));
-  }
-
-  removeField = (id) => {
-    API.removeField(this.props.userId, id)
-      .then(() => {
-        if(id === this.props.selectedField){
-          this.props.selectField(null);
-        }
-        this.props.dbAction(this.props.userId, 'UPDATE_FIELDS');
-      })
-      .catch(err => this.props.updateError(err));
   };
   
 

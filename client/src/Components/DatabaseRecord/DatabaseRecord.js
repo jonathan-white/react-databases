@@ -6,8 +6,9 @@ import { Card, CardHeader, CardImg, CardText, CardBody, CardFooter,
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 
-import './DatabaseRecord.css';
+import { default as actions } from '../../utils/actions';
 import API from '../../utils/API';
+import './DatabaseRecord.css';
 
 const mapStateToDBProps = (state) => {
   return {
@@ -16,40 +17,7 @@ const mapStateToDBProps = (state) => {
 };
 
 const mapDispatchToDBProps = (dispatch) => {
-  return {
-    toggleDbSelection: (database) => {
-      dispatch({
-        type: 'TOGGLE_DB_SELECTION',
-        database: database
-      })
-    },
-    toggleModal: (modalName) => {
-      dispatch({
-        type: 'CLEAR_FORM_MANAGER'
-      });
-      dispatch({
-        type: 'TOGGLE_MODAL',
-        name: modalName
-      });
-    },
-    updateError: (error) => {
-      dispatch({
-        type: 'RECORD_ERROR',
-        error: error
-      })
-    },
-    dbAction: (userId, actionType) => {
-      API.getDatabases(userId)
-        .then(resp => dispatch({
-          type: actionType,
-          databases: resp.data
-        }))
-        .catch(err => dispatch({
-          type: 'RECORD_ERROR',
-          error: err
-        }))
-    }
-  }
+	return actions(dispatch);
 };
 
 class DatabaseEntry extends React.Component {
@@ -70,8 +38,8 @@ class DatabaseEntry extends React.Component {
 
     this.updateState = this.updateState.bind(this);
     this.toggleState = this.toggleState.bind(this);
-    this.removeProjectFromDB = this.removeProjectFromDB.bind(this);
     this.removeDB = this.removeDB.bind(this);
+    this.removeProjectFromDB = this.removeProjectFromDB.bind(this);
     this.submitChanges = this.submitChanges.bind(this);
   };
   
@@ -83,17 +51,17 @@ class DatabaseEntry extends React.Component {
     this.setState((prevState) => ({ [name]: !prevState[name] }));
   };
 
+  removeDB(id){
+    API.removeDB(this.props.userId, id)
+      .then(() => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
+      .catch(err => this.props.updateError(err));
+  };
+
   removeProjectFromDB(prjId){
     API.removeDBProject(this.props.db._id, {userId: this.props.userId, projectId: prjId})
       .then(() => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
       .catch(err => this.props.updateError(err));
   };
-
-  removeDB(id){
-    API.removeDB(this.props.userId, id)
-      .then(() => this.props.dbAction(this.props.userId, 'UPDATE_DATABASES'))
-      .catch(err => this.props.updateError(err));
-  }
 
   submitChanges(){
     if(this.state.editMode){
@@ -118,7 +86,7 @@ class DatabaseEntry extends React.Component {
           .catch(err => this.props.updateError(err));
       }
     }
-  }
+  };
 
   render() {
     const { db } = this.props;

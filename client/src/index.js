@@ -119,7 +119,7 @@ const dbManager = (
             return { ...d, isExpanded: false }
           }
         }),
-        selectedField: action.updatedField,
+        selectedField: action.delta,
         error: null
       }
     case 'TOGGLE_DB_SELECTION':
