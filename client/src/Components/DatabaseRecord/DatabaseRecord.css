@@ -73,3 +73,18 @@
   width: 100%;
 }
 
+.remove-project {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	color: red;
+	cursor: pointer;
+}
+
+.project {
+	position: relative;
+}
+
+.placeholder-project {
+	border: 1px solid #8d92c7;
+}

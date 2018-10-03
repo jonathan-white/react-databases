@@ -7,3 +7,12 @@ header {
   text-align: center;
   background-image: url('./images/tech-bg.png');
 }
+
+.dateAdded {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	color: #aaa;
+	font-style: italic;
+	font-size: .75rem;
+}

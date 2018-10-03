@@ -1,6 +1,6 @@
 .App-logo {
-animation: App-logo-spin infinite 40s linear;
-height: 80px;
+	animation: App-logo-spin infinite 40s linear;
+	height: 80px;
 }
 
 .App-title {
@@ -49,36 +49,6 @@ height: 80px;
 
 .expanded .btn-edit {
 	display: inline-block;
-}
-
-.dateAdded {
-	position: absolute;
-	right: 5px;
-	bottom: 5px;
-	color: #aaa;
-	font-style: italic;
-	font-size: .75rem;
-}
-
-.required {
-	color: red;
-	font-weight: 800;
-}
-
-.placeholder-project {
-	border: 1px solid #8d92c7;
-}
-
-.project {
-	position: relative;
-}
-
-.remove-project {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	color: red;
-	cursor: pointer;
 }
 
 .column-headers {
