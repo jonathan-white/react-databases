@@ -1,4 +1,5 @@
 .signup {
+	position: relative;
 	width: 270px;
 	margin: 20px auto;
 	text-align: left;
@@ -9,4 +10,11 @@
 	text-transform: uppercase;
 	font-size: .875rem;
 	margin-top: 10px;
+}
+
+.signup .close-signup {
+	position: absolute;
+	top: -10px;
+	right: -115px;
+	cursor: pointer;
 }

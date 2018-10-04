@@ -8,7 +8,8 @@ const mapStateToLoginProps = (state) => {
   return {
     username: state.formManager.username,
     password: state.formManager.password,
-    loginError: state.userManager.loginError
+		loginError: state.userManager.loginError,
+		showSignUpForm: state.userManager.showSignUpForm
   }
 };
 
@@ -17,12 +18,12 @@ const mapsDispatchToLoginProps = (dispatch) => {
 };
 
 const LoginForm = ({ username, password, loginError, handleInputChange, 
-	loginUser, toggleSignUpForm
+	loginUser, toggleSignUpForm, showSignUpForm
 }) => (
     <div className="login">
       <Form>
         <Input id="username" type="text" autoComplete="off" name="username"
-          placeholder="Username" onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+          placeholder="Email" onChange={(e) => handleInputChange(e.target.name, e.target.value)}
         />
         <Input id="password" type="password" autoComplete="off" name="password"
           placeholder="Password" onChange={(e) => handleInputChange(e.target.name, e.target.value)}
@@ -30,7 +31,8 @@ const LoginForm = ({ username, password, loginError, handleInputChange,
         <Button color="dark" onClick={(e) => loginUser(e, username, password)}>
           Login
         </Button>
-				<Button color="link" className="text-white btn-join" onClick={() => toggleSignUpForm()}>
+				<Button color="link" onClick={() => toggleSignUpForm()} 
+					className={`text-white btn-join ${showSignUpForm ? 'fadeout' : ''}`} >
 					Signup
 				</Button>
       </Form>

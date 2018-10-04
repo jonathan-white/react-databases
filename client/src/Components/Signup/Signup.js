@@ -17,7 +17,7 @@ const mapsDispatchToSignupProps = (dispatch) => {
 };
 
 const SignupForm = ({ username, password, signUpError, handleInputChange, 
-	signupUser
+	signupUser, toggleSignUpForm
 }) => (
     <div className="signup">
       <Form className="mb-4">
@@ -39,7 +39,8 @@ const SignupForm = ({ username, password, signUpError, handleInputChange,
           Join Now
         </Button>
       </Form>
-      {signUpError && <Alert color="danger">{signUpError.message}</Alert>}
+			{signUpError && <Alert color="danger">{signUpError.message}</Alert>}
+			<div className="close-signup" onClick={() => toggleSignUpForm()}>Close</div>
     </div>
 );
 
