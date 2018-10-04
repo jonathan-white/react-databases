@@ -2,14 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Alert, FormGroup, Label } from 'reactstrap';
 import './Signup.css';
+import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 
 const mapStateToSignupProps = (state) => {
-  return {
-    username: state.formManager.username,
-    password: state.formManager.password,
-    signUpError: state.userManager.signUpError
-  }
+  return stateKeys(state);
 };
 
 const mapsDispatchToSignupProps = (dispatch) => {

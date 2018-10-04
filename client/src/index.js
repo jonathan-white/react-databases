@@ -277,6 +277,11 @@ const userManager = (state = {
 				...state,
 				loginError: action.error
 			}
+		case 'LOGOUT_ERROR':
+			return {
+				...state,
+				logoutError: action.error
+			}
 		case 'SIGNUP_ERROR':
 			return {
 				...state,

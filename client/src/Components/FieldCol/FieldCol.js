@@ -6,15 +6,13 @@ import { Card, CardHeader, CardText, CardBody, Badge, Alert,
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 import API from '../../utils/API';
 import './FieldCol.css';
 
 const mapStateToFieldProps = (state) => {
-  return {
-    userId: state.userManager.userId,
-    selectedField: state.dbManager.selectedField
-  }
+  return stateKeys(state);
 };
 
 const mapDispatchToFieldProps = (dispatch) => {

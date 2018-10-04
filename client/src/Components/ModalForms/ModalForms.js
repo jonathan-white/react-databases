@@ -4,49 +4,12 @@ import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
 	Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 	
+import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 import './ModalForms.css';
 	
 const mapStateToModalFormProps = (state) => {
-	return {
-		// Database Info
-    selectedDB: state.dbManager.selectedDB,
-    selectedTable: state.dbManager.selectedTable,
-
-    // Modals
-    showDBModal: state.modalManager.showDBModal,
-    showTableModal: state.modalManager.showTableModal, 
-    showFieldModal: state.modalManager.showFieldModal, 
-    showProjectModal: state.modalManager.showProjectModal, 
-
-    // Database Modal
-    dbTitle: state.formManager.dbTitle,
-    dbSummary: state.formManager.dbSummary,
-    dbType: state.formManager.dbType,
-
-    // Table Modal
-    tbTitle: state.formManager.tbTitle,
-    tbSummary: state.formManager.tbSummary,
-    tbRecordCount: state.formManager.tbRecordCount,
-
-    // Field Modal
-    fdTitle: state.formManager.fdTitle,
-    fdSummary: state.formManager.fdSummary,
-    fdDataType: state.formManager.fdDataType,
-    fdDataLength: state.formManager.fdDataLength,
-    fdAllowNull: state.formManager.fdAllowNull,
-    fdKey: state.formManager.fdKey,
-    fdDefaultValue: state.formManager.fdDefaultValue,
-
-    // Project Modal
-    prjTitle: state.formManager.prjTitle,
-    prjSummary: state.formManager.prjSummary,
-    prjWebsite: state.formManager.prjWebsite,
-
-    // User Info
-    authUser: state.userManager.authUser,
-    userId: state.userManager.userId,
-	}
+	return stateKeys(state);
 };
 
 const mapDispatchToModalFormProps = (dispatch) => {

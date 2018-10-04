@@ -6,14 +6,13 @@ import { Card, CardHeader, CardImg, CardText, CardBody, CardFooter,
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 
+import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 import API from '../../utils/API';
 import './DatabaseRecord.css';
 
 const mapStateToDBProps = (state) => {
-  return {
-    userId: state.userManager.userId,
-  }
+  return stateKeys(state);
 };
 
 const mapDispatchToDBProps = (dispatch) => {

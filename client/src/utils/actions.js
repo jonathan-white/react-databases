@@ -104,6 +104,12 @@ const actions = (dispatch) => {
 				name: modalName
 			});
 		},
+		searchFor: (query) => {
+			dispatch({
+				type: 'SEARCH_QUERY',
+				query: query
+			})
+		},
 		addProjectToDB(event, dbId, projData){
 			event.preventDefault();
 	
@@ -132,12 +138,6 @@ const actions = (dispatch) => {
 					type: 'RECORD_ERROR',
 					error: err
 				}));
-		},
-		searchFor: (query) => {
-			dispatch({
-				type: 'SEARCH_QUERY',
-				query: query
-			})
 		},
 	
 		// ======================

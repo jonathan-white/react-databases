@@ -5,15 +5,13 @@ import { Badge, Card, CardText, CardHeader, CardBody, CardFooter,
   Collapse, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 import API from '../../utils/API';
 import "./TableRecord.css";
 
 const mapStateToTBProps = (state) => {
-  return {
-    userId: state.userManager.userId,
-    selectedField: state.dbManager.selectedField
-  }
+  return stateKeys(state);
 };
 
 const mapDispatchToTBProps = (dispatch) => {

@@ -10,15 +10,12 @@ import LogoutButton from '../../Components/Logout';
 import ModalForms from '../../Components/ModalForms';
 
 import { auth } from  '../../firebase';
+import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 import './Home.css';
 
 const mapStateToHomeProps = (state) => {
-  return {
-    dbError: state.dbManager.error,
-		authUser: state.userManager.authUser,
-		showSignUpForm: state.userManager.showSignUpForm
-  }
+  return stateKeys(state);
 };
 
 const mapDispatchToHomeProps = (dispatch) => {

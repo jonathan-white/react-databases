@@ -3,13 +3,11 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Input } from 'reactstrap';
 import DatabaseList from '../../Components/DatabaseList';
+import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 
 const mapStateToDBViewerProps = (state) => {
-	return {
-		databases: state.dbManager.databases,
-		query: state.formManager.query,
-	}
+	return stateKeys(state);
 };
 
 const mapDispatchToHomeProps = (dispatch) => {
@@ -23,13 +21,7 @@ class DatabasePageDisplay extends React.Component {
     // Filter the list of databases
     let dbList;
     if(databases && query){
-      dbList = databases.filter(d => {
-        if(d.title.toLowerCase().includes(query.toLowerCase() || '')){
-          return d;
-        } else {
-          return false;
-        }
-      });
+      dbList = databases.filter(d => d.title.toLowerCase().includes(query.toLowerCase()));
     }
 		dbList = dbList || databases;
 		
@@ -58,7 +50,7 @@ class DatabasePageDisplay extends React.Component {
 					</div>
 				</div>
 				<div className="row">
-					<DatabaseList databases={dbList} />
+					<DatabaseList listOfDBs={dbList} />
 				</div>
 			</div>
 		)

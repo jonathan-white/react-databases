@@ -4,12 +4,6 @@ import { Button } from 'reactstrap';
 import { default as actions } from '../../utils/actions';
 import './Logout.css';
 
-const mapStateToLogoutProps = (state) => {
-  return {
-    error: state.formManager.error
-  }
-};
-
 const mapsDispatchToLogoutProps = (dispatch) => {
 	return actions(dispatch);
 };
@@ -21,10 +15,7 @@ const LogoutButton = ({ logoutUser }) => (
     </Button>
 );
 
-const Logout = connect(
-  mapStateToLogoutProps,
-  mapsDispatchToLogoutProps
-)(LogoutButton);
+const Logout = connect(null,mapsDispatchToLogoutProps)(LogoutButton);
 
 
 export default Logout;
