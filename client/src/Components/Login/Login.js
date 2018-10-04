@@ -8,7 +8,7 @@ const mapStateToLoginProps = (state) => {
   return {
     username: state.formManager.username,
     password: state.formManager.password,
-    error: state.formManager.error
+    loginError: state.userManager.loginError
   }
 };
 
@@ -16,7 +16,9 @@ const mapsDispatchToLoginProps = (dispatch) => {
 	return actions(dispatch);
 };
 
-const LoginForm = ({ username, password, error, handleInputChange, submitCredentials }) => (
+const LoginForm = ({ username, password, loginError, handleInputChange, 
+	loginUser, toggleSignUpForm
+}) => (
     <div className="login">
       <Form>
         <Input id="username" type="text" autoComplete="off" name="username"
@@ -25,11 +27,14 @@ const LoginForm = ({ username, password, error, handleInputChange, submitCredent
         <Input id="password" type="password" autoComplete="off" name="password"
           placeholder="Password" onChange={(e) => handleInputChange(e.target.name, e.target.value)}
         />
-        <Button color="dark" onClick={(e) => submitCredentials(e, username, password)}>
-          Submit
+        <Button color="dark" onClick={(e) => loginUser(e, username, password)}>
+          Login
         </Button>
+				<Button color="link" className="text-white btn-join" onClick={() => toggleSignUpForm()}>
+					Signup
+				</Button>
       </Form>
-      {error && <Alert color="danger">{error.message}</Alert>}
+      {loginError && <Alert color="danger">{loginError.message}</Alert>}
     </div>
 );
 

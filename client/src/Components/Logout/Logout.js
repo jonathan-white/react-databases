@@ -1,41 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
-import { auth } from '../../firebase';
+import { default as actions } from '../../utils/actions';
 import './Logout.css';
 
-const mapStateToLoginProps = (state) => {
+const mapStateToLogoutProps = (state) => {
   return {
     error: state.formManager.error
   }
 };
 
-const mapsDispatchToLoginProps = (dispatch) => {
-  return {
-    logout: (event) => {
-      event.preventDefault();
-      // Use Firebase to check auth status
-      auth.doSignOut();
-      dispatch({
-        type: 'LOGOUT_USER'
-      });
-      document.querySelector('#username').value = '';
-      document.querySelector('#password').value = '';
-      localStorage.removeItem('uid');
-    }
-  }
-}
+const mapsDispatchToLogoutProps = (dispatch) => {
+	return actions(dispatch);
+};
 
 // Presentational Component
-const LogoutButton = ({ logout }) => (
-    <Button color="dark" className="btn-logout" onClick={(e) => logout(e)}>
+const LogoutButton = ({ logoutUser }) => (
+    <Button color="dark" className="btn-logout" onClick={(e) => logoutUser(e)}>
         Logout
     </Button>
 );
 
 const Logout = connect(
-  mapStateToLoginProps,
-  mapsDispatchToLoginProps
+  mapStateToLogoutProps,
+  mapsDispatchToLogoutProps
 )(LogoutButton);
 
 

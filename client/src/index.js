@@ -249,7 +249,9 @@ const dbManager = (
   }
 };
 
-const userManager = (state = {}, action) => {
+const userManager = (state = {
+	showSignUpForm: false
+}, action) => {
   switch(action.type){
     case 'AUTHENTICATED_USER':
       return {
@@ -264,7 +266,22 @@ const userManager = (state = {}, action) => {
         ...state,
         authUser: null,
         userId: null
-      }
+			}
+		case 'TOGGLE_SIGNUP_FORM':
+			return {
+				...state,
+				showSignUpForm: !state.showSignUpForm
+			}
+		case 'LOGIN_ERROR':
+			return {
+				...state,
+				loginError: action.error
+			}
+		case 'SIGNUP_ERROR':
+			return {
+				...state,
+				signUpError: action.error
+			}
     default:
       return state;
   }

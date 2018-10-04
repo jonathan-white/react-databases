@@ -1,0 +1,12 @@
+.signup {
+	width: 270px;
+	margin: 20px auto;
+	text-align: left;
+}
+
+.signup .btn-add-new-user {
+	width: 100%;
+	text-transform: uppercase;
+	font-size: .875rem;
+	margin-top: 10px;
+}

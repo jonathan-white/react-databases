@@ -76,3 +76,73 @@
 input.input-title {
 	width: 100px;
 }
+
+/* Sign Up section */
+
+.signup-section {
+	height: 0px;
+	position: fixed;
+	width: 100%;
+	opacity: 0;
+	text-align: center;
+	animation: expand_down 1s 750ms forwards;
+	z-index: 1;
+}
+
+@keyframes expand_down {
+	from { 
+		height: 0px;
+		opacity: 0;
+	}
+	to { 
+		height: 62vh; 
+		opacity: 1;
+	}
+}
+
+.gear-1 {
+	position: relative;
+	top: -107%;
+	width: 100%;
+	height: 225%;
+	background: url(../../images/Gear-04.svg) no-repeat;
+	background-position: 50% 50%;
+	background-size: 100%;
+	animation: rotate_counterclockwise 200s linear infinite;
+}
+
+.gear-2 {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	width: 80%;
+	height: 150%;
+	background: url(/static/media/gear-spokes.afbeb5a3.svg) no-repeat;
+	background-position: 50% 50%;
+	background-size: 70%;
+	animation: rotate_clockwise 100s linear infinite;
+}
+
+.signup-form {
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	-webkit-transform: translate(-50%, 0);
+	-ms-transform: translate(-50%, 0);
+	transform: translate(-50%, 0);
+	width: 350px;
+	height: 250px;
+	background-color: #333;
+	color: #fff;
+}
+
+@keyframes rotate_clockwise {
+	from { transform: translate(-50%,-50%) rotate(0deg); }
+	to { transform: translate(-50%,-50%) rotate(360deg); }
+}
+
+@keyframes rotate_counterclockwise {
+	from { transform: rotate(360deg); }
+	to { transform: rotate(0deg); }
+}

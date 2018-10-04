@@ -5,6 +5,7 @@ import { Alert } from 'reactstrap';
 import logo from '../../images/gear.svg';
 import DatabaseViewer from '../../Components/DatabaseViewer';
 import LoginForm from '../../Components/Login';
+import SignupForm from '../../Components/Signup';
 import LogoutButton from '../../Components/Logout';
 import ModalForms from '../../Components/ModalForms';
 
@@ -15,7 +16,8 @@ import './Home.css';
 const mapStateToHomeProps = (state) => {
   return {
     dbError: state.dbManager.error,
-    authUser: state.userManager.authUser,
+		authUser: state.userManager.authUser,
+		showSignUpForm: state.userManager.showSignUpForm
   }
 };
 
@@ -34,10 +36,18 @@ class HomeDisplay extends React.Component {
   }
 
   render() {
-    const { authUser, dbError } = this.props;
+    const { authUser, dbError, showSignUpForm } = this.props;
 
     return (
       <div className="App">
+				{showSignUpForm && (
+					<div className="signup-section">
+						<div className="gear-1"></div>
+						<div className="signup-form">
+							<SignupForm />
+						</div>
+					</div>
+				)}
         <header className={`${authUser ? 'signed-in' : ''}`}>
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Database Management</h1>

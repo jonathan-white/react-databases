@@ -172,7 +172,7 @@ const actions = (dispatch) => {
 		// Login
 		// ======================
 
-		submitCredentials: (event, username, password) => {
+		loginUser: (event, username, password) => {
 			event.preventDefault();
 			// Use Firebase to check auth status
 			auth.doSignInWithEmailAndPassword(username, password)
@@ -182,8 +182,6 @@ const actions = (dispatch) => {
 						type: 'AUTHENTICATED_USER',
 						user: resp.user
 					});
-	
-					localStorage.setItem('uid',resp.user.uid);
 	
 					// Fetch user's databases
 					API.getDatabases(resp.user.uid)
@@ -197,7 +195,7 @@ const actions = (dispatch) => {
 						}));
 				})
 				.catch(err => dispatch({
-					type: 'FORM_ERROR',
+					type: 'LOGIN_ERROR',
 					error: err
 				}));
 		},
@@ -206,7 +204,7 @@ const actions = (dispatch) => {
 		// Logout
 		// ======================
 		
-		logout: (event) => {
+		logoutUser: (event) => {
 			event.preventDefault();
 			// Use Firebase to check auth status
 			auth.doSignOut();
@@ -215,7 +213,6 @@ const actions = (dispatch) => {
 			});
 			document.querySelector('#username').value = '';
 			document.querySelector('#password').value = '';
-			localStorage.removeItem('uid');
 		},
 		
 		// ======================
@@ -233,6 +230,46 @@ const actions = (dispatch) => {
 				type: 'SELECT_FIELD',
 				field: field
 			});
+		},
+		signupUser: (event, username, password) => {
+			event.preventDefault();
+
+			// Use Firebase to check auth status
+			auth.doCreateUserWithEmailAndPassword(username, password)
+				.then((resp) => {
+					// Once authenticated...
+					if(resp.user){
+						dispatch({
+							type: 'TOGGLE_SIGNUP_FORM'
+						});
+						
+						dispatch({
+							type: 'AUTHENTICATED_USER',
+							user: resp.user
+						});
+				
+						// Fetch user's databases
+						API.getDatabases(resp.user.uid)
+							.then(resp => dispatch({
+								type: 'REFRESH_DB_LIST',
+								databases: resp.data
+							}))
+							.catch(err => dispatch({
+								type: 'RECORD_ERROR',
+								error: err
+							}));
+
+					}
+				})
+				.catch(err => dispatch({
+					type: 'SIGNUP_ERROR',
+					error: err
+				}));
+		},
+		toggleSignUpForm: () => {
+			dispatch({
+				type: 'TOGGLE_SIGNUP_FORM'
+			})
 		}
 	}
 }
