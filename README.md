@@ -6,10 +6,14 @@ App that lets you keep track of various databases including the tables and field
 * Record databases, tables, and fields
 
 ### In Progress
-* User Authentication Phase III
-* Editing of existing databases
+* TBD
 
 ### Developer Notes
+* **10/05/18 Notes:**
+  * Completed User Authentication Phase III
+  * Code Refactoring & Abstraction
+	* Added Sign up feature
+	* Editing of existing databases
 * **09/27/18 Notes:**
   * Updated edit feature for Tables
   * Completed User Authentication Phase II
