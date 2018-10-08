@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Alert } from 'reactstrap';
 
-import logo from '../../images/gear.svg';
 import DatabaseViewer from '../../Components/DatabaseViewer';
 import LoginForm from '../../Components/Login';
 import SignupForm from '../../Components/Signup';
@@ -13,6 +12,8 @@ import { auth } from  '../../firebase';
 import { default as stateKeys } from '../../utils/stateKeys';
 import { default as actions } from '../../utils/actions';
 import './Home.css';
+
+const logo = "https://storage.googleapis.com/db-tracker-1f225.appspot.com/gear.svg";
 
 const mapStateToHomeProps = (state) => {
   return stateKeys(state);

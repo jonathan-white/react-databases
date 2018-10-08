@@ -9,9 +9,8 @@ export const doSignInWithEmailAndPassword = (email, password) =>
   auth.signInWithEmailAndPassword(email, password);
 
 // Sign out
-export const doSignOut = () => {
+export const doSignOut = () =>
   auth.signOut();
-}
 
 // Password Reset
 export const doPasswordReset = (email) =>
@@ -21,5 +20,6 @@ export const doPasswordReset = (email) =>
 export const doPasswordUpdate = (password) =>
   auth.currentUser.updatePassword(password);
 
+// Authentication Persistence 
 export const hasAuthStateChanged = (cb) => 
   auth.onAuthStateChanged(cb);
