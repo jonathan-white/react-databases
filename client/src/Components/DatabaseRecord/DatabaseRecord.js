@@ -6,18 +6,13 @@ import { Card, CardHeader, CardImg, CardText, CardBody, CardFooter,
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 
-import { default as stateKeys } from '../../utils/stateKeys';
-import { default as actions } from '../../utils/actions';
+import stateKeys from '../../utils/stateKeys';
+import actions from '../../utils/actions';
 import API from '../../utils/API';
 import './DatabaseRecord.css';
 
-const mapStateToDBProps = (state) => {
-  return stateKeys(state);
-};
-
-const mapDispatchToDBProps = (dispatch) => {
-	return actions(dispatch);
-};
+const mapStateToDBProps = (state) => stateKeys(state);
+const mapDispatchToDBProps = (dispatch) => actions(dispatch);
 
 class DatabaseEntry extends React.Component {
   constructor(props){
@@ -211,14 +206,10 @@ class DatabaseEntry extends React.Component {
           </CardFooter>
         </Collapse>
       </Card>
-
     )
   }
 };
 
-const DatabaseRecord = connect(
-  mapStateToDBProps, 
-  mapDispatchToDBProps
-)(DatabaseEntry);
+const DatabaseRecord = connect(mapStateToDBProps, mapDispatchToDBProps)(DatabaseEntry);
 
 export default DatabaseRecord;

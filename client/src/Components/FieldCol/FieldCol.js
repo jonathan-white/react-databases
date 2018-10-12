@@ -1,23 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { Card, CardHeader, CardText, CardBody, Badge, Alert, 
   Input, Label, Form, FormGroup } from 'reactstrap';
-import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import moment from 'moment';
 
-import { default as stateKeys } from '../../utils/stateKeys';
-import { default as actions } from '../../utils/actions';
+import stateKeys from '../../utils/stateKeys';
+import actions from '../../utils/actions';
 import API from '../../utils/API';
 import './FieldCol.css';
 
-const mapStateToFieldProps = (state) => {
-  return stateKeys(state);
-};
-
-const mapDispatchToFieldProps = (dispatch) => {
-	return actions(dispatch);
-};
+const mapStateToFieldProps = (state) => stateKeys(state);
+const mapDispatchToFieldProps = (dispatch) => actions(dispatch);
 
 class FieldEntry extends React.Component {
   constructor(props){
@@ -82,11 +76,13 @@ class FieldEntry extends React.Component {
       fdData = {...fdData, key: this.state.fdKey};
     }
     if(this.state.hasChangedDefaultValue) {
-      fdData = {...fdData, defaultValue: this.state.fdfdDefaultValue};
+      fdData = {...fdData, defaultValue: this.state.fdDefaultValue};
     }
 
     // Reset change states
     this.setState({
+			editTitle: false,
+      editDataType: false,
       hasChangedTitle: false,
       hasChangedSummary: false,
       hasChangedDataType: false,
@@ -258,9 +254,6 @@ class FieldEntry extends React.Component {
   }
 };
 
-const FieldCol = connect(
-  mapStateToFieldProps, 
-  mapDispatchToFieldProps
-)(FieldEntry);
+const FieldCol = connect(mapStateToFieldProps, mapDispatchToFieldProps)(FieldEntry);
 
 export default FieldCol;

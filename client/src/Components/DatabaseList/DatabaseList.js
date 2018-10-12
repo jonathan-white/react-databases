@@ -4,17 +4,13 @@ import { connect } from 'react-redux';
 import DatabaseRecord from '../DatabaseRecord';
 import TableCol from '../TableCol';
 import FieldCol from '../FieldCol';
-import { default as stateKeys } from '../../utils/stateKeys';
+import stateKeys from '../../utils/stateKeys';
 import './DatabaseList.css';
 
-const mapStateToDBListProps = (state) => {
-  return stateKeys(state);
-};
+const mapStateToDBListProps = (state) => stateKeys(state);
 
-const DatabaseList = connect(
-  mapStateToDBListProps
-)(({ listOfDBs, selectedField }) => (
-  <div className="col">
+const DatabaseListDisplay = ({ listOfDBs, selectedField }) => (
+	<div className="col">
     {listOfDBs && listOfDBs.map(db => (
       <div key={db._id} className={`row ${db.isExpanded ? 'selected' : ''}`}>
         {/* Database Column */}
@@ -28,6 +24,8 @@ const DatabaseList = connect(
       </div>
     ))}
   </div>
-));
+);
+
+const DatabaseList = connect(mapStateToDBListProps)(DatabaseListDisplay);
 
 export default DatabaseList;

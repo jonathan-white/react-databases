@@ -1,20 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter,
 	Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 	
-import { default as stateKeys } from '../../utils/stateKeys';
-import { default as actions } from '../../utils/actions';
+import stateKeys from '../../utils/stateKeys';
+import actions from '../../utils/actions';
 import './ModalForms.css';
 	
-const mapStateToModalFormProps = (state) => {
-	return stateKeys(state);
-};
-
-const mapDispatchToModalFormProps = (dispatch) => {
-	return actions(dispatch);
-};
+const mapStateToModalFormProps = (state) => stateKeys(state);
+const mapDispatchToModalFormProps = (dispatch) => actions(dispatch);
 
 class ModalForms extends React.Component {
 
@@ -289,10 +283,6 @@ class ModalForms extends React.Component {
 	}
 };
 
-const Modals = connect(
-	mapStateToModalFormProps,
-	mapDispatchToModalFormProps
-)(ModalForms);
+const Modals = connect(mapStateToModalFormProps, mapDispatchToModalFormProps)(ModalForms);
 
 export default Modals;
-

@@ -3,16 +3,11 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Input } from 'reactstrap';
 import DatabaseList from '../../Components/DatabaseList';
-import { default as stateKeys } from '../../utils/stateKeys';
-import { default as actions } from '../../utils/actions';
+import stateKeys from '../../utils/stateKeys';
+import actions from '../../utils/actions';
 
-const mapStateToDBViewerProps = (state) => {
-	return stateKeys(state);
-};
-
-const mapDispatchToHomeProps = (dispatch) => {
-	return actions(dispatch);
-};
+const mapStateToDBViewerProps = (state) => stateKeys(state);
+const mapDispatchToHomeProps = (dispatch) => actions(dispatch);
 
 class DatabasePageDisplay extends React.Component {
 	render(){

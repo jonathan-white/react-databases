@@ -2,16 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Alert, FormGroup, Label } from 'reactstrap';
 import './Signup.css';
-import { default as stateKeys } from '../../utils/stateKeys';
-import { default as actions } from '../../utils/actions';
+import stateKeys from '../../utils/stateKeys';
+import actions from '../../utils/actions';
 
-const mapStateToSignupProps = (state) => {
-  return stateKeys(state);
-};
-
-const mapsDispatchToSignupProps = (dispatch) => {
-	return actions(dispatch);
-};
+const mapStateToSignupProps = (state) => stateKeys(state);
+const mapsDispatchToSignupProps = (dispatch) => actions(dispatch);
 
 const SignupForm = ({ username, password, signUpError, handleInputChange, 
 	signupUser, toggleSignUpForm
@@ -41,9 +36,6 @@ const SignupForm = ({ username, password, signUpError, handleInputChange,
     </div>
 );
 
-const Signup = connect(
-  mapStateToSignupProps,
-  mapsDispatchToSignupProps
-)(SignupForm);
+const Signup = connect(mapStateToSignupProps, mapsDispatchToSignupProps)(SignupForm);
 
 export default Signup;

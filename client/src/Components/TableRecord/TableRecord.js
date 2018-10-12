@@ -1,22 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { Badge, Card, CardText, CardHeader, CardBody, CardFooter,
   Collapse, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { default as stateKeys } from '../../utils/stateKeys';
-import { default as actions } from '../../utils/actions';
+import stateKeys from '../../utils/stateKeys';
+import actions from '../../utils/actions';
 import API from '../../utils/API';
 import "./TableRecord.css";
 
-const mapStateToTBProps = (state) => {
-  return stateKeys(state);
-};
-
-const mapDispatchToTBProps = (dispatch) => {
-	return actions(dispatch);
-};
+const mapStateToTBProps = (state) => stateKeys(state);
+const mapDispatchToTBProps = (dispatch) => actions(dispatch);
 
 class TableEntry extends React.Component {
   constructor(props){
@@ -195,9 +189,6 @@ class TableEntry extends React.Component {
   }
 };
 
-const TableRecord = connect(
-  mapStateToTBProps,
-  mapDispatchToTBProps
-)(TableEntry);
+const TableRecord = connect(mapStateToTBProps, mapDispatchToTBProps)(TableEntry);
 
 export default TableRecord;

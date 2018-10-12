@@ -1,17 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Alert } from 'reactstrap';
+import stateKeys from '../../utils/stateKeys';
+import actions from '../../utils/actions';
 import './Login.css';
-import { default as stateKeys } from '../../utils/stateKeys';
-import { default as actions } from '../../utils/actions';
 
-const mapStateToLoginProps = (state) => {
-  return stateKeys(state);
-};
-
-const mapsDispatchToLoginProps = (dispatch) => {
-	return actions(dispatch);
-};
+const mapStateToLoginProps = (state) => stateKeys(state);
+const mapsDispatchToLoginProps = (dispatch) => actions(dispatch);
 
 const LoginForm = ({ username, password, loginError, handleInputChange, 
 	loginUser, toggleSignUpForm, showSignUpForm
@@ -36,9 +31,6 @@ const LoginForm = ({ username, password, loginError, handleInputChange,
     </div>
 );
 
-const Login = connect(
-  mapStateToLoginProps,
-  mapsDispatchToLoginProps
-)(LoginForm);
+const Login = connect(mapStateToLoginProps, mapsDispatchToLoginProps)(LoginForm);
 
 export default Login;
