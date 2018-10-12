@@ -134,7 +134,12 @@ class ModalForms extends React.Component {
 									onChange={(e) => this.props.handleInputChange(e.target.name, e.target.value)}/>
 							</FormGroup>
 							<FormGroup>
-								<Label for="tbRecordsCount">Number of Records</Label>
+								{selectedDB
+									? (selectedDB.type === 'MongoDB') 
+										? <Label for="tbRecordsCount">Number of Documents</Label>
+										: <Label for="tbRecordsCount">Number of Records</Label>
+									: <Label for="tbRecordsCount">Number of Records</Label>
+								}
 								<Input type="number" name="tbRecordCount" id="tbRecordCount"
 									onChange={(e) => this.props.handleInputChange(e.target.name, e.target.value)} />
 							</FormGroup>

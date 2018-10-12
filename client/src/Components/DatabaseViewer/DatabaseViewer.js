@@ -11,7 +11,7 @@ const mapDispatchToHomeProps = (dispatch) => actions(dispatch);
 
 class DatabasePageDisplay extends React.Component {
 	render(){
-		const { databases, query } = this.props;
+		const { databases, query, selectedDB } = this.props;
     
     // Filter the list of databases
     let dbList;
@@ -38,7 +38,10 @@ class DatabasePageDisplay extends React.Component {
 						</h4>
 					</div>
 					<div className="col-4">
-						<h4>Tables</h4>
+						{selectedDB
+							? (selectedDB.type === 'MongoDB') ? <h4>Collections</h4> : <h4>Tables</h4>
+							: <h4>Tables</h4>
+						}
 					</div>
 					<div className="col-4">
 						<h4>Field Details</h4>

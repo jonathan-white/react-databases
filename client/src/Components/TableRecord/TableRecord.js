@@ -87,7 +87,7 @@ class TableEntry extends React.Component {
 
   render(){
 
-    const { table } = this.props;
+    const { table, selectedDB } = this.props;
     
     const { editMode, editTitle, editRecordCount, tbTitle, tbSummary, tbRecordCount } = this.state;
 
@@ -126,7 +126,13 @@ class TableEntry extends React.Component {
                     }}
                   />)
                   : (<div onClick={() => this.toggleState('editRecordCount')}>
-                  Records: {tbRecordCount}
+									{selectedDB
+										? (selectedDB.type === 'MongoDB') 
+											? 'Docs: '
+											: 'Records: '
+										: 'Records: '
+									}
+                  {tbRecordCount}
                   </div>)
                 }
               </Badge>
