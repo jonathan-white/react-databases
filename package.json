@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
+    "event-stream": "^4.0.0",
     "nodemon": "^1.18.10"
   }
 }
