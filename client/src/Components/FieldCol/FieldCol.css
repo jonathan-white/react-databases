@@ -38,8 +38,8 @@
 }
 
 .field-col {
-  position: absolute;
-  /* left: -25%; */
+  position: relative;
+  left: -25%;
   top: 100px;
   animation: field_slide_right 500ms ease forwards;
   overflow: visible;
@@ -53,7 +53,7 @@
 
 @keyframes field_slide_right {
   0% { left: -25%; top: 100px; }
-  100% { right: 0; top: 0; }
+  100% { left: 0; top: 0; }
 }
 
 .field-entry .key-indicator {
