@@ -7,7 +7,8 @@ const config = {
   databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID
+  messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID
 };
 
 if(!firebase.apps.length) {
