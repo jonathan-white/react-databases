@@ -27,7 +27,6 @@ class ModalForms extends React.Component {
 			type: dbType || 'MySQL'
 		};
 		const isValidDB = dbTitle !== null && dbTitle !== '' &&
-			dbSummary !== null && dbSummary !== '' &&
 			dbType !== null && dbType !== '';
 		
 		// Table Form Data
@@ -82,7 +81,7 @@ class ModalForms extends React.Component {
 							</FormGroup>
 							<FormGroup>
 								<Label for="dbSummary">
-									Description <span className="required">*</span>
+									Description
 								</Label>
 								<Input type="textarea" name="dbSummary" id="dbSummary"
 									onChange={(e) => this.props.handleInputChange(e.target.name, e.target.value)}/>
