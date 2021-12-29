@@ -19,15 +19,15 @@
   "author": "Jon White",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
     "if-env": "^1.0.4",
-    "mongoose": "^5.12.14",
+    "mongoose": "^6.1.4",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "concurrently": "^6.2.0",
+    "concurrently": "^6.5.1",
     "event-stream": "^4.0.1",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.15"
   }
 }
